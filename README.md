@@ -39,6 +39,7 @@ We are looking for the following features to be implemented over time, please ge
     - Go slow, short turn, stop, more buses needed in schedule, schedule, headway, non-functional transit priority, lanes
 - Scoring of routes
 - Global tracking of servers that are running
+- More config and visualization options
 
 ## Current Features
 - Nextbus datasource (route, vehicle locations, stops)
@@ -49,3 +50,5 @@ We are looking for the following features to be implemented over time, please ge
 ## Issues
 - Distance along route is currently from stop 0 -> bus location, doesn't take into account length of route (problems with routes that are not a stright line)
 - Stop lights and camera's only for Toronto
+- Some datasources may throttle API calls based on IP - meaning only a few servers can run on any machine/ip
+- Config is broken
