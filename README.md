@@ -12,7 +12,7 @@ Requirements: latest version of nodejs must be installed
 5. From the browser navigate to the Server Config page in the menu
 6. Choose an agency and route to get advice
 
-Please note that by default npm start on /server will start 2 servers (one on 8080 and one on 8079), you can switch between the from the dropdown in the header.
+Please note that by default `npm start` on /server will start 2 servers (one on 8080 and one on 8079), you can switch between the from the dropdown in the header.
 
 ## Seting up a permanent instance
 1. Clone the repo to a server
