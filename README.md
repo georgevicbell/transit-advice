@@ -52,3 +52,14 @@ We are looking for the following features to be implemented over time, please ge
 - Stop lights and camera's only for Toronto
 - Some datasources may throttle API calls based on IP - meaning only a few servers can run on any machine/ip
 - Config is broken
+
+## Design
+- Each server is designed to collect and analyze route and vehicle data in realtime, a websocket is used to stream data to webclients
+- There are five main datasets - all calculation is done serverside at the moment
+    - serverConfig - agencyList, routeList and config - as more datasets are added this will be merged into a more succinct dataset
+    - routeConfig - stops, route geometry, cameras, stoplights, coloring, along with some calculated fields - distances between stops, buffered route
+    - vehicleList - current list of vehicles, and some calculated fields - distance between vehicles, time between vehicles
+    - history - this is all the vehicle updates received in order, and some calculated fields - distance between vehicles, time between vehicles
+    - advice - this is advice and is split into two categories - route advice, and vehicle advice
+- On startup we get the serverconfig followed by the routeconfig, we then load vehicleList on a 10 second loop
+- History is maintained for 12 hours, then optionally saved to disk
