@@ -5,8 +5,9 @@ The goal of this project is to provide a public, open-source system to generate 
 Requirements: latest version of nodejs must be installed
 
 1. Clone the Repo
-2. run npm install in both the /client and /server folders
-3. run npm start in both the /client and /server folders from separate terminals
+2. Run `npm install` in both the /client and /server folders
+3. Run `npm start` in both the /client and /server folders from separate terminals
+4. Add your google maps key to /client/app/index.tsx
 4. In the /client terminal - press w to open the browser
 5. From the browser navigate to the Server Config page in the menu
 6. Choose an agency and route to get advice
@@ -15,8 +16,8 @@ Please note that by default npm start on /server will start 2 servers (one on 80
 
 ## Seting up a permanent instance
 1. Clone the repo to a server
-2. run npm install in both the /client and /server folders
-3. The server can be started with tsc && node dist/server.js 8080 config.json
+2. Run `npm install` in both the /client and /server folders
+3. The server can be started with `tsc && node dist/server.js 8080 config.json`
     - config.json should be unique for each route you are running, and will be created once you click save on the Server Config page
     - port needs to be unique
 4. In the /client folder you will need to publish the expo project to a webserver to host it
