@@ -18,13 +18,9 @@ type Props = {
     noCircle: boolean
 }
 function CircleLine(props: Props) {
-
     const { x, y, xPrev, yPrev, index } = props
-
-
     return <>
         {!props.noCircle && <Circle key={index} cx={x} cy={y} r={2} fill={props.color} />}
-
         {index > 0 && !props.noLine && <Line x1={xPrev} x2={x} y1={yPrev} y2={y} stroke={props.color} strokeWidth={1} />}
     </>
 }
@@ -64,7 +60,6 @@ export default function Page() {
                             }
                         </View>
                     })
-
                 }
             </View>
             <Svg height="100%" width="100%" viewBox="-200 -100 2300 1200">
@@ -72,9 +67,7 @@ export default function Page() {
                 <Line x1="0" x2="2000" y1="1000" y2="1000" stroke="black" strokeWidth={2} />
                 {[...Array(Math.floor(maxLength) + 1)].map((_, index) => {
                     const x = 1000 - index * 1000 / maxLength
-
                     return <Text key={index} fontFamily="Arial" fontSize={"18"} verticalAlign="center" textAnchor="end" x={-70} y={x} fill="black">{index} km</Text>
-
                 })}
                 {
                     time == "24" ?
@@ -108,13 +101,11 @@ export default function Page() {
                                 <Text fontFamily="Arial" fontSize={"12"} textAnchor="end" x={2000} y={x} fill="darkGray">{title}</Text>
                             </React.Fragment>
                         })
-
                         return (
                             <>
                                 {stops}
                                 <Text fontFamily="Arial" fontWeight={"bold"} fontSize={"20"} textAnchor="middle" x="1000" y={1100 + index * 50} fill="black" > {direction.title}</Text>
                             </>
-
                         )
                     }
                 })
@@ -132,8 +123,6 @@ export default function Page() {
 
                             if (index > 0) {
                                 prevVehicle = groupBuses[group]![index - 1]
-
-
                                 const prevConfig = getConfigFromDir(prevVehicle.direction ?? "")
                                 if (prevVehicle.distanceFromStop == -1) noLine = true
                                 //     if (prevConfig.isFlip)
@@ -145,7 +134,6 @@ export default function Page() {
                                 if (time == "24")
                                     xPrev = xPrev / 24
                             }
-
                             //   if (config.isFlip)
                             //       y = ((((routeConfig?.maxStopDistance ?? 0) - vehicle.distanceFromStop) / maxLength) * 1000)
                             //   else
@@ -166,9 +154,6 @@ export default function Page() {
                     ?? <></>
                 }
             </Svg>
-
-
-
         </View >
     );
 }
