@@ -2,26 +2,37 @@
 import Slider from '@react-native-community/slider';
 import { Picker } from '@react-native-picker/picker';
 import { StatusBar } from 'expo-status-bar';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { DataContext } from '../src/context/DataContext';
 import { useStyleContext } from '../src/context/StyleContext';
+import { AgencyItem, RouteItem } from '../src/context/types';
 
 export default function Page() {
     const styles = useStyleContext();
     if (!styles) return null
-    const { config, setConfig, agencyList, routeList, saveConfig, saveData } = useContext(DataContext)
-
+    const [agency, setAgency] = useState<AgencyItem>()
+    const [route, setRoute] = useState<RouteItem>()
+    const [bufferWidth, setBufferWidth] = useState<number>(0.1)
+    const { config, agencyList, routeList, saveConfig, saveData, setTempAgency } = useContext(DataContext)
+    useEffect(() => {
+        setAgency(config?.agency)
+        setRoute(config?.route)
+        setBufferWidth(config?.bufferWidth ?? 0.1)
+    }, [config])
+    useEffect(() => {
+        setTempAgency(agency)
+    }, [agency])
     return (
         <View style={{ flex: 1 }}>
             <View>
                 <Text>Agency: </Text>
                 <Picker
-                    selectedValue={config?.agency?.id}
+                    selectedValue={agency?.id}
                     onValueChange={(itemValue, itemIndex) => {
                         const item = agencyList.filter(z => { return z.id == itemValue })[0]
                         console.log(item)
-                        setConfig({ agency: item, route: config?.route, bufferWidth: config?.bufferWidth ?? 0.05 })
+                        setAgency(item)
                     }
                     }>
                     {agencyList?.map((z: any) => { return <Picker.Item key={z.id} label={z.title} value={z.id} /> })}
@@ -29,17 +40,17 @@ export default function Page() {
                 </Picker>
                 <Text>Route:</Text>
                 <Picker
-                    selectedValue={config?.route?.id}
+                    selectedValue={route?.id}
                     onValueChange={(itemValue, itemIndex) => {
                         const item = routeList.filter(z => { return z.id == itemValue })[0]
                         console.log(item)
-                        setConfig({ agency: config?.agency, route: item, bufferWidth: config?.bufferWidth ?? 0.05 })
+                        setRoute(item)
                     }
                     }>
                     {routeList?.map((z: any) => { return <Picker.Item key={z.id} label={z.title} value={z.id} /> })}
 
                 </Picker>
-                <Text>On Route Buffer Width: {(config?.bufferWidth ?? 0.05) * 1000} meters</Text>
+                <Text>On Route Buffer Width: {(bufferWidth ?? 0.05) * 1000} meters</Text>
 
                 <Slider
                     style={{ width: 200, height: 40 }}
@@ -47,14 +58,16 @@ export default function Page() {
                     maximumValue={1}
                     minimumTrackTintColor="#FFFFFF"
                     maximumTrackTintColor="#000000"
-                    value={config?.bufferWidth}
+                    value={bufferWidth}
                     step={0.01}
                     onValueChange={(value) => {
-                        setConfig({ agency: config?.agency, route: config?.route, bufferWidth: value })
+                        setBufferWidth(value)
                     }}
                 />
 
-                <Pressable onPress={saveConfig}>
+                <Pressable onPress={() => {
+                    saveConfig({ agency, route, bufferWidth })
+                }}>
                     <Text>Save Config</Text>
                 </Pressable>
                 <Pressable onPress={saveData}>

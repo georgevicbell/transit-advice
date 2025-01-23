@@ -32,7 +32,7 @@ export default function Page() {
     const styles = useStyleContext();
     const mapViewRef = useRef<MapView>(null);
     if (!styles) return null
-    const { historyList, vehicleList, config, setConfig, agencyList, routeList, routeConfig } = useContext(DataContext)
+    const { historyList, vehicleList, config, agencyList, routeList, routeConfig } = useContext(DataContext)
     const [showStops, setShowStops] = React.useState<{ [id: string]: boolean }>({})
     const [time, setTime] = useState("60")
 

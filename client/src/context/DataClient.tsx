@@ -18,8 +18,9 @@ type PropsDataClient = {
     config: Config | undefined
 }
 export type DataClientRef = {
-    saveConfig: () => void
+    saveConfig: (config: Config) => void
     saveData: () => void
+    setTempAgency: (agency: AgencyItem) => void
 }
 export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref) => {
 
@@ -29,11 +30,14 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
 
     useImperativeHandle(ref, () => {
         return {
+            setTempAgency: (agency: AgencyItem) => {
+                sendMessage("setTempAgency", agency)
+            },
             saveData: () => {
                 sendMessage("saveData", "")
             },
-            saveConfig: () => {
-                sendMessage("saveConfig", "")
+            saveConfig: (config: Config) => {
+                sendMessage("saveConfig", config)
             }
 
         }
@@ -57,13 +61,11 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
             else if (json.type == "responseRouteConfig") {
                 console.log("SETTING ROUTE CONFIG")
                 const z = json.text as RouteConfig
-                //  console.log(z)
                 props.onReturnRouteConfig(z)
             }
             else if (json.type == "responseVehicleList") {
                 console.log("SETTING VEHICLE LIST")
                 const z = json.text as VehicleList
-                // console.log(z)
                 props.onReturnVehicleList(z)
             }
             else if (json.type == "responseConfig") {

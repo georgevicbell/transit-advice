@@ -51,7 +51,6 @@ We are looking for the following features to be implemented over time, please ge
 - Distance along route is currently from stop 0 -> bus location, doesn't take into account length of route (problems with routes that are not a stright line)
 - Stop lights and camera's only for Toronto
 - Some datasources may throttle API calls based on IP - meaning only a few servers can run on any machine/ip
-- Config is broken
 
 ## Design
 - Each server is designed to collect and analyze route and vehicle data in realtime, a websocket is used to stream data to webclients

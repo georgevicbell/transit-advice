@@ -31,7 +31,7 @@ export default function Page() {
     const [busSize, setBusSize] = React.useState(7);
     const [showCamera, setShowCamera] = React.useState<CameraItem>();
     if (!styles) return null
-    const { vehicleList, config, setConfig, agencyList, routeList, routeConfig } = useContext(DataContext)
+    const { vehicleList, config, agencyList, routeList, routeConfig } = useContext(DataContext)
 
     function BufferedRoute() {
         if (!showBufferedRoute) return null;
@@ -224,7 +224,7 @@ export default function Page() {
                     <MapView
                         ref={mapViewRef}
                         provider={Platform.OS == "ios" ? undefined : "google"}
-                        // @ts-expect-error
+
                         googleMapsApiKey={googleMapsApiKey}
                         zoomEnabled={true}
                         onRegionChange={onMapChange}
@@ -245,7 +245,10 @@ export default function Page() {
                             <View>
                                 <Text>Loading...</Text>
                             </View>
-                        } style={styles.map2}>
+
+                        }
+                        // @ts-expect-error 
+                        style={styles.map2}>
                         <BufferedRoute />
                         <StopMap />
                         <CameraMap />

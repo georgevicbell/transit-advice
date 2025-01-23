@@ -32,8 +32,12 @@ export function DataProvider(props: Props) {
   const setCurrentCollisionId = (index: string) => {
     router.push(`/collision/${index}`);
   }
-  const saveConfig = () => {
-    dataClientRef.current?.saveConfig()
+  const setTempAgency = (agency: AgencyItem | undefined) => {
+    if (agency)
+      dataClientRef.current?.setTempAgency(agency)
+  }
+  const saveConfig = (config: Config) => {
+    dataClientRef.current?.saveConfig(config)
   }
   const saveData = () => {
     dataClientRef.current?.saveData()
@@ -58,6 +62,7 @@ export function DataProvider(props: Props) {
     >
       <DataContext.Provider
         value={{
+          setTempAgency,
           getUniqueDirections,
           getVehiclesByDirection,
           server, setServer,
@@ -66,7 +71,6 @@ export function DataProvider(props: Props) {
           saveConfig,
           routeConfig,
           config,
-          setConfig,
           saveData,
           agencyList,
           routeList,

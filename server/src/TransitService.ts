@@ -17,6 +17,7 @@ type Props = {
 export type TransitServiceResult = {
     startup: () => void
     saveConfig: () => void
+    setTempAgency: (agency: AgencyItem) => void
     setConfig: (agency: any) => void
     config: Config
     agencyList: AgencyItem[]
@@ -53,6 +54,15 @@ class TransitService {
     public vehicleList: VehicleList | undefined
     public lastTime = 0
     public lastRun = new Date()
+    public setTempAgency = async (tempAgency: AgencyItem) => {
+        const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=routeList&a=" +
+            tempAgency.id,
+        );
+        const list = await NextBusTransformRoutes(data);
+
+        console.log({ Routelist: list.length })
+        await this.onRouteListUpdate(list)
+    }
     private interval = setInterval(() => {
         console.log("Set Interval 10s");
         this.loadVehicleData();
@@ -151,14 +161,13 @@ class TransitService {
         // })
         const maxLength = Math.max(...(lengths ?? [0]))
         rc.maxStopDistance = maxLength
-        console.log
         return rc
     }
-    public saveConfig = () => {
+    public saveConfig = (config: Config) => {
         console.log("Saving Config")
 
         const file = process.argv[3]
-        fs.writeFile(file, JSON.stringify(this.config), err => {
+        fs.writeFile(file, JSON.stringify(config), err => {
             if (err) {
                 console.error(err);
             } else {
@@ -166,6 +175,7 @@ class TransitService {
                 // file written successfully
             }
         });
+        this.setConfig(config)
     }
     public saveData = () => {
         console.log("Saving Data")

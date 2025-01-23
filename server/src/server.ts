@@ -69,9 +69,6 @@ const transitService = new TransitService({
     onAdviceUpdate: sendAdvice,
 })
 //    transitService.startup()
-const setConfig = async (config: Config) => {
-    transitService.setConfig(config)
-}
 function sendMessage(ws: any, type: string, message: any) {
     const msg = {
         type: type,
@@ -112,6 +109,11 @@ webSocketServer.on('connection', function connection(ws: any) {
                 sendAgencyList(transitService.agencyList);
                 sendMessage(ws, "message", "Hello from the server, requestAgencyList");
                 break;
+            case "setTempAgency":
+                console.log('Server received: setTempAgency - ' + json.text);
+                transitService.setTempAgency(json.text);
+                sendMessage(ws, "message", "Hello from the server, setTempRouteList");
+                break;
             case "requestRouteList":
                 console.log('Server received: requestRouteList - ' + json.text);
                 sendRouteList(transitService.routeList);
@@ -133,17 +135,13 @@ webSocketServer.on('connection', function connection(ws: any) {
                 sendConfig(transitService.config);
                 sendRouteConfig(transitService.routeConfig);
                 sendRouteHistory(transitService.historyList);
+                sendRouteList(transitService.routeList);
                 sendAdvice(transitService.advice);
                 sendMessage(ws, "message", "Hello from the server, requestConfig");
                 break;
-            case "setConfig":
-                console.log('Server received: setConfig - ' + json.text);
-                setConfig(json.text);
-                sendMessage(ws, "message", "Hello from the server, set config");
-                break;
             case "saveConfig":
                 console.log('Server received: saveConfig - ' + json.text);
-                transitService.saveConfig();
+                transitService.saveConfig(json.text);
                 sendMessage(ws, "message", "Hello from the server, saveConfig");
                 break;
             case "saveData":
