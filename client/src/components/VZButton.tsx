@@ -18,12 +18,13 @@ export default function VZButton(props: Props) {
     if (!styles) return null
     const ref = useRef(null);
     const isHovered = useHover(ref);
-
+    // @ts-expect-error
     return props.href ? <View ref={ref} style={[styles.button, { backgroundColor: isHovered ? "#ccc" : undefined }]}>
         <Link href={props.href}>
             <Text>{props.children}</Text>
         </Link>
     </View> :
+        // @ts-expect-error
         <Pressable ref={ref} disabled={props.isBusy} style={[styles.button, { ...props.style }, { backgroundColor: isHovered && !props.isBusy ? "#ccc" : undefined }]} onPress={props.onPress}>
             <Text>{props.isBusy ? <ActivityIndicator /> : props.children}</Text>
         </Pressable>
