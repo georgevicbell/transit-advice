@@ -62,3 +62,8 @@ We are looking for the following features to be implemented over time, please ge
     - advice - this is advice and is split into two categories - route advice, and vehicle advice
 - On startup we get the serverconfig followed by the routeconfig, we then load vehicleList on a 10 second loop
 - History is maintained for 12 hours, then optionally saved to disk
+
+![Route Advice](client/assets/screenshots/advice.png)
+![Journey Chart](client/assets/screenshots/journey.png)
+![Map View](client/assets/screenshots/map.png)
+![Vehicle View](client/assets/screenshots/vehicle.png)

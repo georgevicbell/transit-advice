@@ -6,7 +6,7 @@ export default function Simple() {
     const { getVehiclesByDirection, routeConfig } = useContext(DataContext)
 
     const uniqueDirections = [...new Set(routeConfig?.directions.map(x => x.name) ?? [])]
-    return <View style={{ flexDirection: "column" }}>
+    return <View style={{ margin: 10, flexDirection: "column" }}>
         {uniqueDirections.map((dir, index) => {
             return <View key={index}>
                 <Text>{dir}</Text>
