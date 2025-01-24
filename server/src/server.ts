@@ -8,6 +8,10 @@ if (process.argv.length < 4) {
 }
 const server = http.createServer()
 const webSocketServer = new WebSocket.Server({ server })
+
+const adminServer = http.createServer()
+const adminWebSocketServer = new WebSocket.Server({ server: adminServer })
+
 const sendConfig = async (config: Config) => {
     webSocketServer.clients.forEach(
         (client: any) => {
@@ -82,15 +86,32 @@ function sendMessage(ws: any, type: string, message: any) {
 console.log({ 'server port': process.argv[2] })
 server.listen(process.argv[2], () => {
     const address = server.address()
+})
+console.log({ 'adminServer port': process.argv[3] })
+adminServer.listen(process.argv[3], () => {
+    const address = adminServer.address()
+})
+adminWebSocketServer.on('connection', function connection(ws: any) {
+    ws.on('error', console.error);
 
-    // @ts-ignore
-    /* const url = `http://localhost:${address.port}`
-     const clientWebSocket = new WebSocket(url)
- 
-     clientWebSocket.onmessage = ((message: any) => {
-         console.log(message.data)
-         sendMessage(clientWebSocket, "message", "Hello from the server client")
-     })*/
+    ws.on('message', function message(data: any) {
+        const json = JSON.parse(data)
+
+        switch (json.type) {
+            case "saveConfig":
+                console.log('Server received: saveConfig - ' + json.text);
+                transitService.saveConfig(json.text);
+                sendMessage(ws, "message", "Hello from the server, saveConfig");
+                break;
+            case "saveData":
+                console.log('Server received: saveData - ' + json.text);
+                transitService.saveData();
+                sendMessage(ws, "message", "Hello from the server, saveData");
+                break;
+            default:
+                console.log('Unknown message type: %s', json.type);
+        }
+    })
 })
 webSocketServer.on('connection', function connection(ws: any) {
 
@@ -139,16 +160,8 @@ webSocketServer.on('connection', function connection(ws: any) {
                 sendAdvice(transitService.advice);
                 sendMessage(ws, "message", "Hello from the server, requestConfig");
                 break;
-            case "saveConfig":
-                console.log('Server received: saveConfig - ' + json.text);
-                transitService.saveConfig(json.text);
-                sendMessage(ws, "message", "Hello from the server, saveConfig");
-                break;
-            case "saveData":
-                console.log('Server received: saveData - ' + json.text);
-                transitService.saveData();
-                sendMessage(ws, "message", "Hello from the server, saveData");
-                break;
+
+
             default:
                 console.log('Unknown message type: %s', json.type);
         }

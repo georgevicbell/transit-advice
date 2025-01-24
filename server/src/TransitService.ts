@@ -4,7 +4,7 @@ import fs from 'fs';
 import { getAdviceForRoute } from "./Advice/Advice";
 import { NextBusLoader, NextBusTransformAgencies, NextBusTransformRouteConfig, NextBusTransformRoutes, NextBusTransformVehicles } from "./loaders/NextBusLoader";
 import { LoadTorontoCameras, LoadTorontoTrafficLights } from "./loaders/Toronto/LoadTorontoData";
-import { Advice, AgencyItem, Config, DataVehicleItem, RouteConfig, RouteItem, VehicleList } from "./types";
+import { Advice, AgencyItem, Config, DataRouteStopItem, DataVehicleItem, RouteConfig, RouteItem, VehicleList } from "./types";
 import { getDistanceFromLatLonInKm } from "./utils/Math";
 type Props = {
     onConfigUpdate: (config: Config) => Promise<void>
@@ -69,7 +69,7 @@ class TransitService {
     }, 10000);
     public loadConfig = () => {
         console.log("Loading Config")
-        const file = process.argv[3]
+        const file = process.argv[4]
         fs.readFile(file, "utf8", (err, data) => {
             if (err) {
                 console.error(err);
@@ -113,28 +113,39 @@ class TransitService {
         return data
     }
     private processRouteConfig = (rc: RouteConfig): RouteConfig => {
-        const bufferedRoute = rc.routeMap.map(z => {
+        const bufferedRoute = rc.routeMap?.map(z => {
             const ls = turf.lineString(z.map((y) => {
                 return [y.lon, y.lat]
-            }), {})
+            }) ?? [], {})
 
             return buffer(ls, this.config.bufferWidth ?? 0.05)
         })
-        const za = bufferedRoute.filter((z) => !!z)
+        const za = bufferedRoute?.filter((z) => !!z) ?? []
         const z = turf.featureCollection(za)
         const z2 = turf.truncate(z, { precision: 5, mutate: true })
-        const bufferedRouteUnion = turf.union(z2)
+
+        var bufferedRouteUnion
+        try { bufferedRouteUnion = turf.union(z2) }
+        catch (e) {
+            bufferedRouteUnion = null
+            console.log("Buffered Route Union Error")
+        }
         rc.bufferedRoute = bufferedRouteUnion
-        const stopToMeasureFrom = rc.stops[0]
+        var stopToMeasureFrom: DataRouteStopItem | null
+        if (rc.stops?.length > 0) {
+            stopToMeasureFrom = rc.stops[0]
+        } else {
+            stopToMeasureFrom = null
+        }
         console.log(stopToMeasureFrom)
-        rc.directions = rc.directions.map((direction) => {
+        rc.directions = rc.directions?.map((direction) => {
             direction.stops = direction.stops.map((stop, index) => {
                 const curPos = rc.stops.filter((configStop) => configStop.id === stop.id)[0].position
                 const prevPos = index > 0 ? rc.stops.filter((configStop) => configStop.id === direction.stops[index - 1].id)[0].position : curPos
                 const nextPos = index < direction.stops.length - 1 ? rc.stops.filter((configStop) => configStop.id === direction.stops[index + 1].id)[0].position : curPos
                 stop.distanceToNext = getDistanceFromLatLonInKm(curPos, nextPos)
                 stop.distanceToPrev = getDistanceFromLatLonInKm(curPos, prevPos)
-                stop.distanceFromStart = getDistanceFromLatLonInKm(stopToMeasureFrom.position, curPos)
+                stop.distanceFromStart = stopToMeasureFrom ? getDistanceFromLatLonInKm(stopToMeasureFrom.position, curPos) : -1
                 // stop.distanceFromEnd=getDistanceFrom
                 return stop
             })
@@ -146,7 +157,7 @@ class TransitService {
                 return stop
             })
             return direction
-        })
+        }) ?? []
 
         // const lengths = rc?.directions.map((direction, index) => {
         //     return direction.stops.reduce((acc, stop) => acc + stop.distanceToNext, 0)
@@ -166,7 +177,7 @@ class TransitService {
     public saveConfig = (config: Config) => {
         console.log("Saving Config")
 
-        const file = process.argv[3]
+        const file = process.argv[4]
         fs.writeFile(file, JSON.stringify(config), err => {
             if (err) {
                 console.error(err);

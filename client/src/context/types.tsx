@@ -102,6 +102,7 @@ export type Config = {
 export type Server = {
     name: string
     server: string
+    adminServer: string
 }
 
 

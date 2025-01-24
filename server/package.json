@@ -5,7 +5,7 @@
   "scripts": {
     "build": "",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/server.js 8080 config.json & node dist/server.js 8079 config2.json"
+    "start": "tsc && node dist/server.js 8079 8080 config.json & node dist/server.js 8077 8078 config2.json"
   },
   "author": "",
   "license": "ISC",

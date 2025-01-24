@@ -25,8 +25,9 @@ export type DataClientRef = {
 export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref) => {
 
     const [open, setOpen] = useState(false)
-
+    const [openAdmin, setOpenAdmin] = useState(false)
     const [clientWebSocket, setClientWebSocket] = useState<WebSocket | undefined>(undefined)
+    const [adminClientWebSocket, setAdminClientWebSocket] = useState<WebSocket | undefined>(undefined)
 
     useImperativeHandle(ref, () => {
         return {
@@ -34,14 +35,32 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
                 sendMessage("setTempAgency", agency)
             },
             saveData: () => {
-                sendMessage("saveData", "")
+                sendAdminMessage("saveData", "")
             },
             saveConfig: (config: Config) => {
-                sendMessage("saveConfig", config)
+                sendAdminMessage("saveConfig", config)
             }
 
         }
     })
+    const setupAdminSocket = (adminSocket: WebSocket) => {
+        adminSocket.onmessage = ((a: any) => {
+            const json = JSON.parse(a.data)
+        })
+        adminSocket.onopen = () => {
+            console.log("OPEN")
+            setOpenAdmin(true)
+        }
+        adminSocket.onerror = () => { console.log("ERROR") }
+
+        adminSocket.onclose = () => {
+
+            setOpenAdmin(false)
+            setClientWebSocket(undefined)
+            console.log("CLOSED")
+        }
+        return adminSocket
+    }
     const setupSocket = (socket: WebSocket) => {
 
         socket.onmessage = ((a: any) => {
@@ -101,11 +120,14 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
     useEffect(() => {
         const socket = new WebSocket(props.server.server)
         setClientWebSocket(setupSocket(socket))
+        const adminSocket = new WebSocket(props.server.adminServer)
+        setAdminClientWebSocket(setupAdminSocket(adminSocket))
     }, [])
 
     useEffect(() => {
         console.log("CLOSING - SERVER CHANGE")
         clientWebSocket?.close()
+        adminClientWebSocket?.close()
     }, [props.server])
 
 
@@ -124,6 +146,15 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
             setClientWebSocket(setupSocket(socket))
         }
     }, [open])
+    useEffect(() => {
+        if (openAdmin) {
+            sendMessage("message", "Hello from the client")
+        } else {
+            console.log("Trying to open again: " + props.server.adminServer)
+            const adminSocket = new WebSocket(props.server.adminServer)
+            setAdminClientWebSocket(setupAdminSocket(adminSocket))
+        }
+    }, [openAdmin])
     const sendMessage = (type: any, msg: any) => {
         if (clientWebSocket) {
             const msgComplete = {
@@ -136,7 +167,18 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
 
         }
     }
+    const sendAdminMessage = (type: any, msg: any) => {
+        if (adminClientWebSocket) {
+            const msgComplete = {
+                type: type,
+                text: msg,
+                id: "webClientAdmin",
+                date: Date.now(),
+            };
+            adminClientWebSocket.send(JSON.stringify(msgComplete))
 
+        }
+    }
     const requestAgencyList = () => {
         sendMessage("requestAgencyList", "")
     }

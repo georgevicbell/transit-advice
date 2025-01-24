@@ -12,8 +12,12 @@ export default function Header(props: DrawerHeaderProps) {
     const { server, setServer } = useContext(DataContext)
     const insets = useSafeAreaInsets();
     const servers: Server[] = [{
-        name: "50", server: "http://localhost:8080"
-    }, { name: "test", server: "http://localhost:8079" }]
+        name: "50", server: "http://localhost:8079",
+        adminServer: "http://localhost:8080"
+    }, {
+        name: "test", server: "http://localhost:8077",
+        adminServer: "http://localhost:8078"
+    }]
     return <View style={{
 
 

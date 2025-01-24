@@ -13,7 +13,7 @@ type Props = {
 export function DataProvider(props: Props) {
   const router = useRouter();
   const [config, setConfig] = useState<Config>();
-  const [server, setServer] = useState<Server>({ server: "http://localhost:8080", name: "505" })
+  const [server, setServer] = useState<Server>({ adminServer: "http://localhost:8080", server: "http://localhost:8079", name: "505" })
   const [agencyList, setAgencyList] = useState<AgencyItem[]>([]);
   const [advice, setAdvice] = useState<Advice[]>([]);
   const [historyList, setHistoryList] = useState<DataVehicleItem[]>([]);
@@ -59,12 +59,14 @@ export function DataProvider(props: Props) {
       onReturnConfig={setConfig}
       config={config}
       server={server}
+
     >
       <DataContext.Provider
         value={{
           setTempAgency,
           getUniqueDirections,
           getVehiclesByDirection,
+
           server, setServer,
           historyList,
           advice,

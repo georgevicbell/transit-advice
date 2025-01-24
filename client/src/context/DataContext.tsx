@@ -23,8 +23,9 @@ export type DataContext = {
 };
 export const DataContext = createContext<DataContext>({
   server: {
-    name: "505", server:
-      "http://localhost:8080"
+    name: "505",
+    server: "http://localhost:8079",
+    adminServer: "http://localhost:8080"
   },
   getUniqueDirections: () => [],
   getVehiclesByDirection: () => [],
