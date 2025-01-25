@@ -180,6 +180,7 @@ export async function NextBusTransformVehicles(
             direction: undefined,
             distanceToNextVehicle: 0,
             distanceToPrevVehicle: 0,
+            headway: -1
           };
         })
         : dataA.vehicle == null || dataA.vehicle == undefined
@@ -197,12 +198,13 @@ export async function NextBusTransformVehicles(
               dir: dataA.dirTag,
               speed: dataA.speedKmHr,
               heading: dataA.heading,
-              secsSinceReport: dataA.secsSinceReport,
+              secsSinceReport: undefined,//dataA.secsSinceReport,
               title: dataA.title,
               distanceFromStop: 0,
               direction: undefined,
               distanceToNextVehicle: 0,
               distanceToPrevVehicle: 0,
+              headway: -1
             }
           ]
   }

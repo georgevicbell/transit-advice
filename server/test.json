@@ -1,0 +1,18 @@
+{
+    "agency": {
+        "id": "test",
+        "title": "test",
+        "type": 0,
+        "state": "Ontario",
+        "country": "Canada",
+        "typeOf": "AgencyItem"
+    },
+    "route": {
+        "id": "504",
+        "title": "504-King",
+        "type": 0,
+        "group": "Vehicles",
+        "typeOf": "RouteItem"
+    },
+    "bufferWidth": 0.05
+}

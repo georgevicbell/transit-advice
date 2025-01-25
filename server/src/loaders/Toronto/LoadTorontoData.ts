@@ -5,10 +5,10 @@ export async function LoadTorontoCameras(rc: RouteConfig): Promise<CameraItem[]>
     try {
         const packageId = "a3309088-5fd4-4d34-8297-77c8301840ac";
         const file = await fetch(`https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action/package_show?id=${packageId}`)
-        const json = await file.json()
+        const json = await file.json() as any
         const resource = json.result.resources.filter((resource: any) => { return resource.datastore_active })[0]
         const file2 = await fetch(`https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action/datastore_search?id=${resource["id"]}`)
-        const json2 = await file2.json()
+        const json2 = await file2.json() as any
         const records = json2.result.records
         console.log({ 'cameras loaded': records.length })
         cameras = records.map((item: any) => {
@@ -46,7 +46,7 @@ export async function LoadTorontoTrafficLights(rc: RouteConfig): Promise<Traffic
     var trafficLights: TrafficLightItem[] = [];
     try {
         const data = await fetch('https://secure.toronto.ca/opendata/cart/traffic_signals/v3?format=json')
-        const json = await data.json()
+        const json = await data.json() as any
 
         console.log({ 'lights loaded': json.length })
         trafficLights = json.map((item: any) => {

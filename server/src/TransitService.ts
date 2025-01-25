@@ -1,3 +1,4 @@
+import { UniqueSet } from '@sepiariver/unique-set';
 import { buffer } from "@turf/buffer";
 import * as turf from '@turf/turf';
 import fs from 'fs';
@@ -35,7 +36,7 @@ class TransitService {
     private onRouteConfigUpdate: (routeList: RouteConfig | undefined) => Promise<void>
     private onVehicleListUpdate: (vehicleList: VehicleList | undefined) => Promise<void>
     private onAdviceUpdate: (advice: Advice[]) => Promise<void>
-    public historyList: DataVehicleItem[] = []
+    public historyList: UniqueSet<DataVehicleItem> = new UniqueSet()
     constructor(props: Props) {
         this.onConfigUpdate = props.onConfigUpdate
         this.onAgencyListUpdate = props.onAgencyListUpdate
@@ -262,6 +263,37 @@ class TransitService {
         await this.onRouteConfigUpdate(this.routeConfig)
         await this.onAdviceUpdate(this.advice)
     }
+    public getHeadway = (vehicleList: VehicleList, historyList: UniqueSet<DataVehicleItem>): DataVehicleItem[] => {
+
+        const fullList = Array.from(historyList)
+
+        const data = vehicleList.data.map((vehicle) => {
+            const sameDirection = fullList?.filter((x) => x.dir === vehicle.dir) ?? []
+            const groupBuses = Object.groupBy(sameDirection, ({ id }) => id);
+            const group = groupBuses[vehicle.id]
+            const sorted = group?.sort((a, b) => { return a.lastTime - b.lastTime }) ?? []
+            const split = sorted.filter((x, index) => {
+                if (x.distanceFromStop < vehicle.distanceFromStop)
+                    if (index > 0)
+                        if (sorted[index - 1].distanceFromStop > vehicle.distanceFromStop)
+                            return true
+                return false
+            })
+            const lastSplit = split[split.length - 1]
+            if (lastSplit) {
+                const lastTime = lastSplit?.lastTime ?? 0
+                vehicle.headway = vehicle.lastTime - lastTime
+            }
+            else
+                vehicle.headway = -1
+            if (split.length > 0) {
+                console.log({ split: split.length })
+                console.log({ id: vehicle.id, hw: vehicle.headway })
+            }
+            return vehicle
+        })
+        return data
+    }
     public startGetVehicleList = async () => {
         console.log("Starting Vehicle List")
         if (!this.config.route)
@@ -299,10 +331,13 @@ class TransitService {
             return item
         })
         list.data = this.getDistancesToNextPrev(list)
+        list.data = this.getHeadway(list, this.historyList)
         this.vehicleList = list
-        this.historyList = [...new Set([...this.historyList, ...list.data])]
+        list.data.forEach((item) => {
+            this.historyList = this.historyList.add(item)
+        })
         console.log({ 'VehicleList Loaded': this.vehicleList.data.length })
-        console.log({ 'history length': this.historyList.length })
+        console.log({ 'history length': this.historyList.size })
 
         await this.onVehicleListUpdate(this.vehicleList)
 

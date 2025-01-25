@@ -33,6 +33,11 @@ export default function Simple() {
                                         : <View style={{ justifyContent: "center" }}><Text style={{ fontSize: 10 }}>-</Text></View>
 
                                     }
+                                    {x.headway ?
+                                        <View style={{ justifyContent: "center" }}><Text style={{ fontSize: 10 }}>{(x.headway / 1000).toFixed(0)} seconds</Text></View>
+                                        : <View style={{ justifyContent: "center" }}><Text style={{ fontSize: 10 }}>-</Text></View>
+
+                                    }
                                 </View>
                             </View>
                         })

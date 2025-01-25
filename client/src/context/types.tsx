@@ -14,8 +14,9 @@ export type AgencyArea = {
     title: string;
 };
 export enum AgencyType {
-    NextBus,
-    UK,
+    NextBus = "NextBus",
+    UK = "UK",
+    Test = "Test"
 }
 
 export type RouteItem = {
@@ -87,11 +88,12 @@ export type DataVehicleItem = {
     route: string;
     dir: string;
     speed: number;
-    secsSinceReport: number
+    secsSinceReport: number | undefined
     distanceFromStop: number
     direction: string | undefined
     distanceToNextVehicle: number | null
     distanceToPrevVehicle: number | null
+    headway: number
 
 };
 export type Config = {

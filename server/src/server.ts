@@ -143,7 +143,7 @@ webSocketServer.on('connection', function connection(ws: any) {
             case "requestRouteConfig":
                 console.log('Server received: requestRouteConfig - ' + json.text);
                 sendRouteConfig(transitService.routeConfig);
-                sendRouteHistory(transitService.historyList);
+                sendRouteHistory(Array.from(transitService.historyList));
                 sendMessage(ws, "message", "Hello from the server, requestRouteConfig");
                 break;
             case "requestVehicleList":
@@ -155,7 +155,7 @@ webSocketServer.on('connection', function connection(ws: any) {
                 console.log('Server received: requestConfig - ' + json.text);
                 sendConfig(transitService.config);
                 sendRouteConfig(transitService.routeConfig);
-                sendRouteHistory(transitService.historyList);
+                sendRouteHistory(Array.from(transitService.historyList));
                 sendRouteList(transitService.routeList);
                 sendAdvice(transitService.advice);
                 sendMessage(ws, "message", "Hello from the server, requestConfig");
