@@ -3,9 +3,9 @@ import { buffer } from "@turf/buffer";
 import * as turf from '@turf/turf';
 import fs from 'fs';
 import { getAdviceForRoute } from "./Advice/Advice";
-import { NextBusLoader, NextBusTransformAgencies, NextBusTransformRouteConfig, NextBusTransformRoutes, NextBusTransformVehicles } from "./loaders/NextBusLoader";
+import { AgencyLoader, RouteConfigLoader, RouteLoader, VehicleLoader } from "./loaders/Loader";
 import { LoadTorontoCameras, LoadTorontoTrafficLights } from "./loaders/Toronto/LoadTorontoData";
-import { Advice, AgencyItem, Config, DataRouteStopItem, DataVehicleItem, RouteConfig, RouteItem, VehicleList } from "./types";
+import { Advice, AgencyItem, Config, DataRouteStopItem, DataSource, DataVehicleItem, RouteConfig, RouteItem, VehicleList } from "./types";
 import { getDistanceFromLatLonInKm } from "./utils/Math";
 type Props = {
     onConfigUpdate: (config: Config) => Promise<void>
@@ -56,11 +56,7 @@ class TransitService {
     public lastTime = 0
     public lastRun = new Date()
     public setTempAgency = async (tempAgency: AgencyItem) => {
-        const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=routeList&a=" +
-            tempAgency.id,
-        );
-        const list = await NextBusTransformRoutes(data);
-
+        const list = await RouteLoader(tempAgency)
         console.log({ Routelist: list.length })
         await this.onRouteListUpdate(list)
     }
@@ -82,11 +78,8 @@ class TransitService {
                 } catch (e) {
                     console.log("File Load Error" + e)
                 }
-
-                // file written successfully
             }
         })
-
     }
     private getUniqueDirections = () => {
         return [...new Set(this.routeConfig?.directions.map(x => x.name) ?? [])]
@@ -214,8 +207,7 @@ class TransitService {
     };
     private startup = async () => {
         console.log("Starting Transit Service")
-        const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=agencyList");
-        const list = await NextBusTransformAgencies(data);
+        const list = await AgencyLoader(DataSource.NextBus)
         this.agencyList = [...this.agencyList, ...list];
         console.log({ AgencyList: this.agencyList.length })
         await this.onAgencyListUpdate(this.agencyList)
@@ -228,10 +220,7 @@ class TransitService {
         if (!this.config.agency)
             this.routeList = []
         else {
-            const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=routeList&a=" +
-                this.config.agency.id,
-            );
-            const list = await NextBusTransformRoutes(data);
+            const list = await RouteLoader(this.config.agency)
             this.routeList = list
         }
         console.log({ Routelist: this.routeList.length })
@@ -240,18 +229,11 @@ class TransitService {
             this.routeConfig = undefined
 
         else {
-            const data = await NextBusLoader(
-                "https://retro.umoiq.com/service/publicJSONFeed?command=routeConfig&verbose&a=" +
-                this.config.agency?.id +
-                "&r=" +
-                this.config.route.id,
-            );
-            const config = await NextBusTransformRouteConfig(data)
-            const processedConfig = this.processRouteConfig(config)
-            const cameras = await LoadTorontoCameras(processedConfig)
-            const trafficLights = await LoadTorontoTrafficLights(processedConfig)
-            processedConfig.cameras = cameras
-            processedConfig.trafficLights = trafficLights
+            const routeConfig = await RouteConfigLoader(this.config.agency, this.config.route)
+
+            const processedConfig = this.processRouteConfig(routeConfig)
+            processedConfig.cameras = await LoadTorontoCameras(processedConfig)
+            processedConfig.trafficLights = await LoadTorontoTrafficLights(processedConfig)
 
 
             this.routeConfig = processedConfig
@@ -298,15 +280,7 @@ class TransitService {
         console.log("Starting Vehicle List")
         if (!this.config.route)
             return
-        const dataA = await NextBusLoader(
-            "https://retro.umoiq.com/service/publicJSONFeed?command=vehicleLocations&a=" +
-            this.config.agency?.id +
-            "&r=" +
-            this.config.route.id +
-            "&t=" +
-            this.lastTime
-        );
-        var list = await NextBusTransformVehicles(dataA);
+        const list = await VehicleLoader(this.config.agency, this.config.route, this.lastTime)
 
         list.data = list.data.map((item) => {
             const direction = this.routeConfig?.directions.filter((direction) => { return direction.id == item.dir })[0]

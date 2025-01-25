@@ -2,7 +2,7 @@ import { Feature, GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
 export type AgencyItem = {
     id: string;
     title: string;
-    type: AgencyType;
+    type: DataSource;
     state: string;
     country: string;
     areas: AgencyArea[] | undefined;
@@ -37,7 +37,7 @@ export type AgencyArea = {
     id: string;
     title: string;
 };
-export enum AgencyType {
+export enum DataSource {
     NextBus = "NextBus",
     UK = "UK",
     Test = "Test"
@@ -46,7 +46,7 @@ export enum AgencyType {
 export type RouteItem = {
     id: string;
     title: string;
-    type: AgencyType;
+    type: DataSource;
     group: string;
     typeOf: "RouteItem";
 };

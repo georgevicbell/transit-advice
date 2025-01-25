@@ -1,12 +1,12 @@
 import {
   AgencyItem,
-  AgencyType,
   DataRouteDirectionItem,
   DataRouteStopItem,
+  DataSource,
   RouteConfig,
   RouteItem,
   RouteMap,
-  VehicleList,
+  VehicleList
 } from "../types";
 import { fetchFileSystem } from "./FetchFileSystem";
 export type RouteBounds = {
@@ -62,7 +62,7 @@ export async function NextBusTransformAgencies(
     return {
       id: item.tag,
       title: item.title,
-      type: AgencyType.NextBus,
+      type: DataSource.NextBus,
       state: item.regionTitle,
       country: GetCountry(item.regionTitle),
       areas: undefined,
@@ -81,7 +81,7 @@ export async function NextBusTransformRoutes(
       return {
         id: item.tag,
         title: item.title,
-        type: AgencyType.NextBus,
+        type: DataSource.NextBus,
         group: "Vehicles",
         typeOf: "RouteItem",
 
@@ -93,7 +93,7 @@ export async function NextBusTransformRoutes(
     return [{
       id: data.route.tag,
       title: data.route.title,
-      type: AgencyType.NextBus,
+      type: DataSource.NextBus,
       group: "Vehicles",
       typeOf: "RouteItem",
     }]
