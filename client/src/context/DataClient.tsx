@@ -2,10 +2,7 @@
 import { Dispatch, forwardRef, SetStateAction, useEffect, useImperativeHandle, useState } from "react";
 import { View } from "react-native";
 import { Advice, AgencyItem, Config, DataVehicleItem, RouteConfig, RouteItem, Server, VehicleList } from "./types";
-
-
 type PropsDataClient = {
-
     children: any
     onReturnHistoryList: (vl: DataVehicleItem[]) => void;
     onReturnVehicleList: (vl: VehicleList) => void;
@@ -130,10 +127,6 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
         adminClientWebSocket?.close()
     }, [props.server])
 
-
-
-
-
     useEffect(() => {
 
         if (open) {
@@ -185,7 +178,5 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
     const requestConfig = () => {
         sendMessage("requestConfig", "")
     }
-
-    // const onReturnRouteList = (returnRouteList: RouteItem[]) => { }
     return <View style={{ flex: 1 }}>{props.children}</View>
 })

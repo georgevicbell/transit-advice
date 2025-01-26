@@ -1,1 +1,18 @@
-{"agency":{"id":"ttc","title":"Toronto Transit Commission","type":0,"state":"Ontario","country":"Canada","typeOf":"AgencyItem"},"route":{"id":"504","title":"504-King","type":0,"group":"Vehicles","typeOf":"RouteItem"},"bufferWidth":0.05}
+{
+    "agency": {
+        "id": "ttc",
+        "title": "Toronto Transit Commission",
+        "type": "NextBus",
+        "state": "Ontario",
+        "country": "Canada",
+        "typeOf": "AgencyItem"
+    },
+    "route": {
+        "id": "504",
+        "title": "504-King",
+        "type": "NextBus",
+        "group": "Vehicles",
+        "typeOf": "RouteItem"
+    },
+    "bufferWidth": 0.05
+}
