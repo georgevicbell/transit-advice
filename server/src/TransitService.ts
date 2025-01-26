@@ -60,7 +60,7 @@ class TransitService {
         console.log({ Routelist: list.length })
         await this.onRouteListUpdate(list)
     }
-    private interval = setInterval(() => {
+    private vehicleInterval = setInterval(() => {
         console.log("Set Interval 10s");
         this.loadVehicleData();
     }, 10000);
@@ -73,8 +73,12 @@ class TransitService {
             } else {
                 try {
                     const config = JSON.parse(data);
+                    if (config.agency.type == DataSource.Test) {
+                        console.log("Turning off Vehicle Timer")
+                        clearInterval(this.vehicleInterval)
+                    }
+                    console.log("Config file read successfully");
                     this.setConfig(config)
-                    console.log("File read successfully");
                 } catch (e) {
                     console.log("File Load Error" + e)
                 }
@@ -106,7 +110,7 @@ class TransitService {
         })
         return data
     }
-    private processRouteConfig = (rc: RouteConfig): RouteConfig => {
+    private getBufferedRoute = (rc: RouteConfig) => {
         const bufferedRoute = rc.routeMap?.map(z => {
             const ls = turf.lineString(z.map((y) => {
                 return [y.lon, y.lat]
@@ -124,15 +128,16 @@ class TransitService {
             bufferedRouteUnion = null
             console.log("Buffered Route Union Error")
         }
-        rc.bufferedRoute = bufferedRouteUnion
+        return bufferedRouteUnion
+    }
+    private getStopDistances(rc: RouteConfig) {
         var stopToMeasureFrom: DataRouteStopItem | null
         if (rc.stops?.length > 0) {
             stopToMeasureFrom = rc.stops[0]
         } else {
             stopToMeasureFrom = null
         }
-        console.log(stopToMeasureFrom)
-        rc.directions = rc.directions?.map((direction) => {
+        const directions = rc.directions = rc.directions?.map((direction) => {
             direction.stops = direction.stops.map((stop, index) => {
                 const curPos = rc.stops.filter((configStop) => configStop.id === stop.id)[0].position
                 const prevPos = index > 0 ? rc.stops.filter((configStop) => configStop.id === direction.stops[index - 1].id)[0].position : curPos
@@ -152,6 +157,12 @@ class TransitService {
             })
             return direction
         }) ?? []
+        return directions
+    }
+    private processRouteConfig = (rc: RouteConfig): RouteConfig => {
+
+        rc.bufferedRoute = this.getBufferedRoute(rc)
+        rc.directions = this.getStopDistances(rc)
 
         // const lengths = rc?.directions.map((direction, index) => {
         //     return direction.stops.reduce((acc, stop) => acc + stop.distanceToNext, 0)
@@ -230,18 +241,19 @@ class TransitService {
 
         else {
             const routeConfig = await RouteConfigLoader(this.config.agency, this.config.route)
-
             const processedConfig = this.processRouteConfig(routeConfig)
+
+            console.log("Load Toronto Specifc Data")
             processedConfig.cameras = await LoadTorontoCameras(processedConfig)
             processedConfig.trafficLights = await LoadTorontoTrafficLights(processedConfig)
-
-
             this.routeConfig = processedConfig
+
+            console.log("Getting Advice")
             const advice = getAdviceForRoute(this.routeConfig)
             this.advice = advice
         }
         // console.log({ RouteConfig: this.routeConfig })
-
+        console.log("Done Setting Config")
         await this.onRouteConfigUpdate(this.routeConfig)
         await this.onAdviceUpdate(this.advice)
     }

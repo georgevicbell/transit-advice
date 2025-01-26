@@ -1,0 +1,9 @@
+[
+    {
+        "id": "tests/routeConfig1.json",
+        "title": "test1",
+        "type": "Test",
+        "group": "Route",
+        "typeOf": "RouteItem"
+    }
+]

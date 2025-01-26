@@ -1,10 +1,14 @@
 import { AgencyItem, DataSource, RouteConfig, RouteItem, VehicleList } from "../types";
 import { NextBusLoader, NextBusTransformAgencies, NextBusTransformRouteConfig, NextBusTransformRoutes, NextBusTransformVehicles } from "./NextBusLoader";
-
+import { TestRouteConfigLoader, TestRouteLoader } from "./TestLoader";
 export async function RouteLoader(agency: AgencyItem): Promise<RouteItem[]> {
     if (agency.type === DataSource.NextBus) {
         const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=routeList&a=" + agency.id);
         const list = await NextBusTransformRoutes(data);
+        return list
+    }
+    else if (agency.type === DataSource.Test) {
+        const list = await TestRouteLoader(agency)
         return list
     }
     return []
@@ -14,6 +18,9 @@ export async function AgencyLoader(dataSource: DataSource): Promise<AgencyItem[]
         const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=agencyList");
         const list = await NextBusTransformAgencies(data);
         return list
+    }
+    else if (dataSource === DataSource.Test) {
+        throw new Error("Can't load Agency List from test")
     }
     return []
 }
@@ -26,6 +33,10 @@ export async function RouteConfigLoader(agency: AgencyItem | undefined, route: R
             route.id,
         );
         const config = await NextBusTransformRouteConfig(data)
+        return config
+    }
+    else if (route.type === DataSource.Test) {
+        const config = await TestRouteConfigLoader(agency, route)
         return config
     }
     return {

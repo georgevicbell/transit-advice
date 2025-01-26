@@ -1,16 +1,16 @@
 {
     "agency": {
-        "id": "test",
+        "id": "tests/route1.json",
         "title": "test",
-        "type": 0,
+        "type": "Test",
         "state": "Ontario",
         "country": "Canada",
         "typeOf": "AgencyItem"
     },
     "route": {
-        "id": "504",
+        "id": "tests/routeConfig1.json",
         "title": "504-King",
-        "type": 0,
+        "type": "Test",
         "group": "Vehicles",
         "typeOf": "RouteItem"
     },

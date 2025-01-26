@@ -1,0 +1,21 @@
+{
+    "maxStopDistance": 0,
+    "bufferedRoute": null,
+    "color": "",
+    "oppositeColor": "",
+    "routeMap": [],
+    "bounds": {
+        "min": {
+            "lat": 0,
+            "lon": 0
+        },
+        "max": {
+            "lat": 0,
+            "lon": 0
+        }
+    },
+    "stops": [],
+    "directions": [],
+    "cameras": [],
+    "trafficLights": []
+}
