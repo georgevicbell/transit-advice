@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.0",
+    "@react-native-community/slider": "4.5.5",
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.14",
@@ -18,8 +19,10 @@
     "@teovilla/react-native-web-maps": "^0.9.5",
     "@turf/turf": "^7.2.0",
     "@types/node": "^22.10.5",
+    "d3": "^7.9.0",
     "expo": "~52.0.24",
     "expo-constants": "~17.0.3",
+    "expo-image": "~2.0.4",
     "expo-linking": "~7.0.3",
     "expo-router": "~4.0.16",
     "expo-status-bar": "~2.0.0",
@@ -41,12 +44,11 @@
     "reconnecting-websocket": "^4.4.0",
     "sharedb": "^5.1.1",
     "typescript": "^5.7.3",
-    "ws": "^8.12.1",
-    "@react-native-community/slider": "4.5.5",
-    "expo-image": "~2.0.4"
+    "ws": "^8.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@types/d3": "^7.4.3",
     "@types/react": "~18.3.12",
     "typescript": "^5.3.3"
   },
