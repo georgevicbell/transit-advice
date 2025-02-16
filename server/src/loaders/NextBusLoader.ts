@@ -8,7 +8,6 @@ import {
   RouteMap,
   VehicleList
 } from "../types";
-import { fetchFileSystem } from "./FetchFileSystem";
 export type RouteBounds = {
   latMin: number;
   latMax: number;
@@ -19,7 +18,9 @@ export type RouteBounds = {
 export async function NextBusLoader(
   baseUrl: string,
 ): Promise<Record<string, any>> {
-  const baseJson = await fetchFileSystem(baseUrl);
+  const text = await fetch(baseUrl)
+  const baseJson = JSON.parse(await text.text());
+
 
   return baseJson;
 }

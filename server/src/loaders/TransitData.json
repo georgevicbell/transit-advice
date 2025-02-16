@@ -1,0 +1,146 @@
+{
+  "OVERRIDES": [
+    {
+      "title": "Ontario",
+      "visible": false
+    },
+    {
+      "title": "Quebec",
+      "visible": false
+    }
+  ],
+  "UKLoader": [
+    {
+      "RegionCode": "EA",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_anglia/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_anglia/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_anglia/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_anglia/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_anglia/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_anglia/stop_times.txt",
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/east_anglia/",
+      "onS3": true
+    },
+    {
+      "RegionCode": "EM",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_midlands/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_midlands/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_midlands/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_midlands/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_midlands/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/east_midlands/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/east_midlands/"
+    },
+    {
+      "RegionCode": "GB",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/england/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/england/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/england/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/england/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/england/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/england/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/england/"
+    },
+    {
+      "RegionCode": "L",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/london/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/london/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/london/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/london/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/london/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/london/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/london/"
+    },
+    {
+      "RegionCode": "NE",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_east/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_east/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_east/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_east/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_east/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_east/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/north_east/"
+    },
+    {
+      "RegionCode": "NW",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_west/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_west/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_west/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_west/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_west/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/north_west/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/north_west/"
+    },
+    {
+      "RegionCode": "S",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/scotland/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/scotland/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/scotland/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/scotland/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/scotland/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/scotland/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/scotland/"
+    },
+    {
+      "RegionCode": "SE",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_east/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_east/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_east/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_east/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_east/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_east/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/south_east/"
+    },
+    {
+      "RegionCode": "SW",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_west/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_west/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_west/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_west/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_west/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/south_west/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/south_west/"
+    },
+    {
+      "RegionCode": "W",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/wales/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/wales/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/wales/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/wales/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/wales/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/wales/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/wales/"
+    },
+    {
+      "RegionCode": "WM",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/west_midlands/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/west_midlands/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/west_midlands/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/west_midlands/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/west_midlands/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/west_midlands/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/west_midlands/"
+    },
+    {
+      "RegionCode": "Y",
+      "routeUrl": "https://transitdata.s3.amazonaws.com/gtfs/yorkshire/routes.txt",
+      "agencyUrl": "https://transitdata.s3.amazonaws.com/gtfs/yorkshire/agency.txt",
+      "stopsUrl": "https://transitdata.s3.amazonaws.com/gtfs/yorkshire/stops.txt",
+      "tripsUrl": "https://transitdata.s3.amazonaws.com/gtfs/yorkshire/trips.txt",
+      "shapesUrl": "https://transitdata.s3.amazonaws.com/gtfs/yorkshire/shapes.txt",
+      "stopTimesUrl": "https://transitdata.s3.amazonaws.com/gtfs/yorkshire/stop_times.txt",
+      "onS3": true,
+      "gtfs": "https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/yorkshire/"
+    }
+  ]
+}
