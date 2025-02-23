@@ -1,7 +1,7 @@
 
 import { Image } from "expo-image";
 import { StatusBar } from 'expo-status-bar';
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Chip from "../src/components/Chip";
 import VZModal from '../src/components/VZModal';
@@ -32,7 +32,16 @@ export default function Page() {
     const [showCamera, setShowCamera] = React.useState<CameraItem>();
     if (!styles) return null
     const { vehicleList, config, agencyList, routeList, routeConfig } = useContext(DataContext)
-
+    useEffect(() => {
+        if (!routeConfig) return
+        const region = {
+            latitude: routeConfig.bounds.min.lat,
+            longitude: routeConfig.bounds.max.lon,
+            latitudeDelta: (routeConfig.bounds.max.lat - routeConfig.bounds.min.lat + 0.05),
+            longitudeDelta: (routeConfig.bounds.max.lon - routeConfig.bounds.min.lon + 0.05),
+        }
+        mapViewRef.current?.animateToRegion(region, 100)
+    }, [mapViewRef.current, routeConfig])
     function BufferedRoute() {
         if (!showBufferedRoute) return null;
         return routeConfig?.bufferedRoute?.geometry.coordinates.map((line, index) => {
@@ -187,7 +196,6 @@ export default function Page() {
             center,
             heading
         } = await mapViewRef.current.getCamera();
-        console.log(zoom)
         if (!zoom) {
             setTrafficLightSize(2)
             setStopSize(2)
@@ -233,13 +241,13 @@ export default function Page() {
                         showsPointsOfInterest={false}
                         showsTraffic={false}
                         showsBuildings={false}
-                        minZoomLevel={11}
+                        minZoomLevel={10}
                         pitchEnabled={false}
                         zoomControlEnabled={false}
 
                         showsUserLocation={false}
                         animationEnabled={true}
-                        initialRegion={{ latitude: 43.6532, longitude: -79.3832, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
+                        initialRegion={{ latitude: 13.6532, longitude: -39.3832, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
                         showsCompass={false}
                         loadingFallback={
                             <View>

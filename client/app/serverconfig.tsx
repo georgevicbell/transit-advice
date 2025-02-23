@@ -1,7 +1,7 @@
 
 import Slider from '@react-native-community/slider';
 import { StatusBar } from 'expo-status-bar';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataContext } from '../src/context/DataContext';
@@ -16,14 +16,28 @@ export default function Page() {
     const [agency, setAgency] = useState<AgencyItem>()
     const [route, setRoute] = useState<RouteItem>()
     const [bufferWidth, setBufferWidth] = useState<number>(0.1)
+    const scrollViewRef = useRef<ScrollView>(null);
+    var selectedViewRef = useRef<View | null>(null);
     const { config, agencyList, routeList, saveConfig, saveData, setTempAgency } = useContext(DataContext)
+    const scrollToSpecific = () => {
+        selectedViewRef.current?.measure((x, y) => {
+            scrollViewRef.current?.scrollTo({ x: 0, y, animated: true });
+        })
+
+    }
     useEffect(() => {
         setState(config?.agency?.state)
         setCountry(config?.agency?.country)
         setAgency(config?.agency)
         setRoute(config?.route)
         setBufferWidth(config?.bufferWidth ?? 0.1)
+        scrollToSpecific()
+
     }, [config])
+    useEffect(() => {
+
+        scrollToSpecific()
+    }, [selectedViewRef.current])
     useEffect(() => {
         setTempAgency(agency)
     }, [agency])
@@ -79,10 +93,13 @@ export default function Page() {
                 </View>}
                 {agency && <View style={{ borderWidth: 1 }}>
                     <Text style={{ fontWeight: "bold", padding: 10 }}>Route </Text>
-                    <ScrollView style={{ height: 200 }}>
+                    <ScrollView ref={scrollViewRef} style={{ height: 200 }}>
                         {
                             routeList?.map((routeS, index) => {
-                                return <Pressable key={index} style={{ padding: 10, backgroundColor: routeS.id == route?.id ? "lightgray" : undefined }} onPress={() => {
+                                return <Pressable key={index} ref={(ref) => {
+                                    if (routeS.id == route?.id)
+                                        selectedViewRef.current = ref
+                                }} style={{ padding: 10, backgroundColor: routeS.id == route?.id ? "lightgray" : undefined }} onPress={() => {
                                     setRoute(routeS)
                                 }}><Text>{routeS.title}</Text></Pressable>
                             })
@@ -106,15 +123,21 @@ export default function Page() {
                     setBufferWidth(value)
                 }}
             />
-
-            <Pressable onPress={() => {
-                saveConfig({ agency, route, bufferWidth })
-            }}>
-                <Text>Save Config</Text>
-            </Pressable>
-            <Pressable onPress={saveData}>
-                <Text>Save Data</Text>
-            </Pressable>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+                <Pressable disabled={config?.agency?.id == agency?.id &&
+                    config?.route?.id == route?.id &&
+                    config?.bufferWidth == bufferWidth} style={{ borderWidth: 1, borderRadius: 5, padding: 5 }} onPress={() => {
+                        if (agency && route)
+                            saveConfig({ agency, route, bufferWidth })
+                        else
+                            alert("Please select agency and route")
+                    }}>
+                    <Text>Save Config</Text>
+                </Pressable>
+                <Pressable style={{ borderWidth: 1, borderRadius: 5, padding: 5 }} onPress={saveData}>
+                    <Text>Save Data</Text>
+                </Pressable>
+            </View>
 
 
             <StatusBar style="auto" />

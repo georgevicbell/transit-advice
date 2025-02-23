@@ -114,24 +114,45 @@ export async function NextBusTransformRouteConfig(
       stopId: item.stopId,
     };
   });
-  const directions: DataRouteDirectionItem[] = data.route?.direction?.map((item: Record<string, any>) => {
-    return {
-      id: item.tag,
-      title: item.title,
-      name: item.name,
-      useForUI: item.useForUI,
-      stops: item.stop.map((item2: Record<string, any>) => {
+  var directions: DataRouteDirectionItem[]
+  if (data.route?.direction?.map)
+    directions = data.route?.direction?.map((item: Record<string, any>) => {
+      return {
+        id: item.tag,
+        title: item.title,
+        name: item.name,
+        useForUI: item.useForUI,
+        stops: item.stop.map((item2: Record<string, any>) => {
+          return {
+            id: item2.tag,
+          };
+        }),
+      };
+    })
+  else
+    directions = [{
+      id: data.route?.direction.tag,
+      title: data.route?.direction.title,
+      name: data.route?.direction.name,
+      useForUI: data.route?.direction.useForUI,
+      stops: data.route?.direction.stop.map((item2: Record<string, any>) => {
         return {
           id: item2.tag,
         };
       }),
-    };
-  })
-  const routeMap: RouteMap = data.route?.path.map((item: any) => {
-    return item.point.map((item2: any) => {
-      return { lat: parseFloat(item2.lat), lon: parseFloat(item2.lon) };
+    }]
+  var routeMap: RouteMap
+  if (data.route?.path.map)
+    routeMap = data.route?.path.map((item: any) => {
+      return item.point.map((item2: any) => {
+        return { lat: parseFloat(item2.lat), lon: parseFloat(item2.lon) };
+      });
     });
-  });
+  else
+    routeMap = [data.route?.path.point.map((item2: any) => {
+      return { lat: parseFloat(item2.lat), lon: parseFloat(item2.lon) };
+    })];
+
   return {
     maxStopDistance: data.route?.maxStopDistance,
     bufferedRoute: null,
@@ -140,12 +161,12 @@ export async function NextBusTransformRouteConfig(
     routeMap: routeMap,
     bounds: {
       min: {
-        lat: data.route?.latMin,
-        lon: data.route?.lonMin
+        lat: parseFloat(data.route?.latMin),
+        lon: parseFloat(data.route?.lonMin)
       },
       max: {
-        lat: data.route?.latMax,
-        lon: data.route?.lonMax
+        lat: parseFloat(data.route?.latMax),
+        lon: parseFloat(data.route?.lonMax)
       }
     },
     stops: stops,
@@ -158,6 +179,7 @@ export async function NextBusTransformRouteConfig(
 export async function NextBusTransformVehicles(
   dataA: Record<string, any>
 ): Promise<VehicleList> {
+  console.log({ dataA })
   const z = {
     title: "Vehicles",
     lastTime: parseFloat(dataA?.lastTime?.time ?? 0),
