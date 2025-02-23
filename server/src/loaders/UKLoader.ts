@@ -143,8 +143,8 @@ export async function UKRouteLoader(agencyId: string): Promise<GTFSOutput> {
     (z: { RegionCode: string; }) => z.RegionCode == agencyId
   )[0];
   if (regionTransitData.onS3) {
-    const routesP = fetch(regionTransitData.routeUrl + "UKLoaded" + regionTransitData.RegionCode + "routes.txt")
-    const agencyP = fetch(regionTransitData.agencyUrl + "UKLoaded" + regionTransitData.RegionCode + "agency.txt")
+    const routesP = fetch(regionTransitData.routeUrl)
+    const agencyP = fetch(regionTransitData.agencyUrl)
     const downloadList = await Promise.all([routesP, agencyP])
     const downloadText = downloadList.map(z => z.text())
     const [routes, agency] = await Promise.all(downloadText)
@@ -263,10 +263,10 @@ export async function UKRouteConfigLoader(
     (z: { RegionCode: string; }) => z.RegionCode == agencyId
   )[0];
   if (regionTransitData.onS3) {
-    const tripsP = fetch(regionTransitData.tripsUrl + "UKLoaded" + regionTransitData.RegionCode + "trips.txt")
-    const stopsP = fetch(regionTransitData.stopsUrl + "UKLoaded" + regionTransitData.RegionCode + "stops.txt")
-    const shapesP = fetch(regionTransitData.shapesUrl + "UKLoaded" + regionTransitData.RegionCode + "shapes.txt")
-    const stopTimesP = fetch(regionTransitData.stopTimesUrl + "UKLoaded" + regionTransitData.RegionCode + "stopTimes.txt")
+    const tripsP = fetch(regionTransitData.tripsUrl)
+    const stopsP = fetch(regionTransitData.stopsUrl)
+    const shapesP = fetch(regionTransitData.shapesUrl)
+    const stopTimesP = fetch(regionTransitData.stopTimesUrl)
     const downloadList = await Promise.all([tripsP, stopsP, shapesP, stopTimesP])
     const downloadText = downloadList.map(z => z.text())
     const [trips, stops, shapes, stopTimes] = await Promise.all(downloadText)

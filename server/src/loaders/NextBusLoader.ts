@@ -179,7 +179,6 @@ export async function NextBusTransformRouteConfig(
 export async function NextBusTransformVehicles(
   dataA: Record<string, any>
 ): Promise<VehicleList> {
-  console.log({ dataA })
   const z = {
     title: "Vehicles",
     lastTime: parseFloat(dataA?.lastTime?.time ?? 0),
