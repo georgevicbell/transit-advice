@@ -67,7 +67,8 @@ export async function RouteConfigLoader(agency: AgencyItem | undefined, route: R
         stops: [],
         directions: [],
         cameras: [],
-        trafficLights: []
+        trafficLights: [],
+        trafficStops: []
     }
 }
 export async function VehicleLoader(agency: AgencyItem | undefined, route: RouteItem, lastTime: number): Promise<VehicleList> {

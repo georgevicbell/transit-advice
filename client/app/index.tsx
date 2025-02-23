@@ -12,6 +12,7 @@ import { Bus } from '../src/MapView/MapItems/Bus';
 import { Camera } from '../src/MapView/MapItems/Camera';
 import { Stop } from '../src/MapView/MapItems/Stop';
 import { TrafficLight } from '../src/MapView/MapItems/TrafficLight';
+import { TrafficStop } from "../src/MapView/MapItems/TrafficStop";
 import { mapStyle } from '../src/MapView/mapStyle';
 import MapView, { Marker, Polygon, Polyline } from "../src/MapView/MapView";
 import { LatLng } from "../src/MapView/MapView.web";
@@ -23,6 +24,7 @@ export default function Page() {
     const [trafficLightSize, setTrafficLightSize] = React.useState(2);
     const [showCameras, setShowCameras] = React.useState(true);
     const [showTrafficLights, setShowTrafficLights] = React.useState(true);
+    const [showTrafficStops, setShowTrafficStops] = React.useState(true);
     const [showStops, setShowStops] = React.useState(true);
     const [showRoute, setShowRoute] = React.useState(true);
     const [showVehicles, setShowVehicles] = React.useState(true);
@@ -105,6 +107,32 @@ export default function Page() {
                             title={index.toString()}
                         >
                             <TrafficLight borderColor='#00ff00' size={trafficLightSize} backColor={"#ff0000"} data={z} />
+                        </Marker>
+                    );
+                })}
+            </>
+        );
+    }
+    function TrafficStopMap() {
+        if (!showTrafficStops) return null;
+        return (
+            <>
+                {routeConfig?.trafficStops.map((z, index) => {
+                    if (z == undefined) return null;
+
+                    return (
+
+                        <Marker
+                            anchor={{ x: 0.5, y: 0.5 }}
+                            key={index}
+                            coordinate={{
+                                latitude: z.position.lat,
+                                longitude: z.position.lon,
+                            }}
+                            zIndex={10}
+                            title={index.toString()}
+                        >
+                            <TrafficStop borderColor='#00ff00' size={trafficLightSize} backColor={"#ff0000"} data={z} />
                         </Marker>
                     );
                 })}
@@ -261,6 +289,7 @@ export default function Page() {
                         <StopMap />
                         <CameraMap />
                         <TrafficLightMap />
+                        <TrafficStopMap />
                         <VehicleMap />
                         <RouteMapGroup />
 
@@ -272,6 +301,7 @@ export default function Page() {
                                 <Chip value={showVehicles} onPress={setShowVehicles} >Vehicles</Chip>
                                 <Chip value={showBufferedRoute} onPress={setShowBufferedRoute} >On Route Area</Chip>
                                 <Chip value={showTrafficLights} onPress={setShowTrafficLights} >Traffic Lights</Chip>
+                                <Chip value={showTrafficStops} onPress={setShowTrafficStops} >Stop Signs</Chip>
                                 <Chip value={showCameras} onPress={setShowCameras} >Cameras</Chip>
                             </View>
                         </ScrollView>

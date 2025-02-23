@@ -4,7 +4,7 @@ import * as turf from '@turf/turf';
 import fs from 'fs';
 import { getAdviceForRoute } from "./Advice/Advice";
 import { AgencyLoader, RouteConfigLoader, RouteLoader, VehicleLoader } from "./loaders/Loader";
-import { getTrafficLights } from "./loaders/OSMTrafficLights";
+import { getTrafficLights, getTrafficStops } from "./loaders/OSMTrafficLights";
 import { LoadTorontoCameras } from "./loaders/Toronto/LoadTorontoData";
 import { Advice, AgencyItem, Config, DataRouteStopItem, DataSource, DataVehicleItem, RouteConfig, RouteItem, VehicleList } from "./types";
 import { getDistanceFromLatLonInKm } from "./utils/Math";
@@ -248,6 +248,7 @@ class TransitService {
             processedConfig.cameras = await LoadTorontoCameras(processedConfig)
             //  processedConfig.trafficLights = await LoadTorontoTrafficLights(processedConfig)
             processedConfig.trafficLights = await getTrafficLights(processedConfig)
+            processedConfig.trafficStops = await getTrafficStops(processedConfig)
             this.routeConfig = processedConfig
 
             console.log("Getting Advice")

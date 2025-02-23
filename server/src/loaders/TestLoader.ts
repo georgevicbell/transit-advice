@@ -38,6 +38,7 @@ export async function TestRouteConfigLoader(agency: AgencyItem | undefined, rout
         stops: [],
         directions: [],
         cameras: [],
-        trafficLights: []
+        trafficLights: [],
+        trafficStops: []
     }
 }

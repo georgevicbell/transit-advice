@@ -172,7 +172,8 @@ export async function NextBusTransformRouteConfig(
     stops: stops,
     directions: directions,
     cameras: [],
-    trafficLights: []
+    trafficLights: [],
+    trafficStops: []
   };
 }
 

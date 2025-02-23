@@ -428,6 +428,7 @@ export function UKTransformRouteConfig(
     directions: [],
     cameras: [],
     trafficLights: [],
+    trafficStops: [],
     color: "ff0000",
     oppositeColor: "00ffff",
     routeMap: [routeMap],

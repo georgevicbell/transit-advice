@@ -61,6 +61,7 @@ export type RouteConfig = {
     directions: DataRouteDirectionItem[];
     cameras: CameraItem[];
     trafficLights: TrafficLightItem[];
+    trafficStops: TrafficStopItem[];
 };
 export type DataRouteDirectionItem = {
     id: string;
@@ -133,6 +134,21 @@ export type TrafficLightItem = {
     info: string,
 }
 
+export type TrafficStopItem = {
+    position: Position,
+    transit: string,
+    rail: string,
+    approaches: string,
+    main: string,
+    side1: string,
+    side2: string,
+    private: string,
+    system: string,
+    control: string,
+    ped: string,
+    bike: string,
+    info: string,
+}
 export type Advice = {
     message: string;
     type: string;
