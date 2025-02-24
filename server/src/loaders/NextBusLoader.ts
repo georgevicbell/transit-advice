@@ -101,7 +101,7 @@ export async function NextBusTransformRoutes(
 }
 
 export async function NextBusTransformRouteConfig(
-  data: Record<string, any>
+  data: Record<string, any>, agency: AgencyItem | undefined, route: RouteItem
 ): Promise<RouteConfig> {
   const stops: DataRouteStopItem[] = data.route?.stop?.map((item: Record<string, any>) => {
     return {
@@ -122,11 +122,11 @@ export async function NextBusTransformRouteConfig(
         title: item.title,
         name: item.name,
         useForUI: item.useForUI,
-        stops: item.stop.map((item2: Record<string, any>) => {
+        stops: item.stop.map ? item.stop.map((item2: Record<string, any>) => {
           return {
             id: item2.tag,
           };
-        }),
+        }) : [{ id: item.stop.tag }],
       };
     })
   else
@@ -154,6 +154,8 @@ export async function NextBusTransformRouteConfig(
     })];
 
   return {
+    agency: agency ?? { id: "", title: "", type: DataSource.NextBus, state: "", country: "", areas: undefined, typeOf: "AgencyItem" },
+    route: route,
     maxStopDistance: data.route?.maxStopDistance,
     bufferedRoute: null,
     color: data.route?.color,

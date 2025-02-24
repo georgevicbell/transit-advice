@@ -6,6 +6,7 @@ import { getAdviceForRoute } from "./Advice/Advice";
 import { AgencyLoader, RouteConfigLoader, RouteLoader, VehicleLoader } from "./loaders/Loader";
 import { getTrafficLights, getTrafficStops } from "./loaders/OSMTrafficLights";
 import { LoadTorontoCameras } from "./loaders/Toronto/LoadTorontoData";
+import { Status } from "./server";
 import { Advice, AgencyItem, Config, DataRouteStopItem, DataSource, DataVehicleItem, RouteConfig, RouteItem, VehicleList } from "./types";
 import { getDistanceFromLatLonInKm } from "./utils/Math";
 type Props = {
@@ -13,8 +14,9 @@ type Props = {
     onAgencyListUpdate: (agencyList: AgencyItem[]) => Promise<void>
     onRouteListUpdate: (routeList: RouteItem[]) => Promise<void>
     onVehicleListUpdate: (vehicleList: VehicleList | undefined) => Promise<void>
-    onRouteConfigUpdate: (routeInfo: RouteConfig | undefined) => Promise<void>
+    onRouteConfigUpdate: (routeInfo: RouteConfig[]) => Promise<void>
     onAdviceUpdate: (advice: Advice[]) => Promise<void>
+    printTable: (status: Partial<Status>) => void
 };
 export type TransitServiceResult = {
     startup: () => void
@@ -34,11 +36,12 @@ class TransitService {
     private onConfigUpdate: (config: Config) => Promise<void>;
     private onAgencyListUpdate: (agencyList: AgencyItem[]) => Promise<void>;
     private onRouteListUpdate: (routeList: RouteItem[]) => Promise<void>
-    private onRouteConfigUpdate: (routeList: RouteConfig | undefined) => Promise<void>
+    private onRouteConfigUpdate: (routeList: RouteConfig[]) => Promise<void>
     private onVehicleListUpdate: (vehicleList: VehicleList | undefined) => Promise<void>
     private onAdviceUpdate: (advice: Advice[]) => Promise<void>
     public historyList: UniqueSet<DataVehicleItem> = new UniqueSet()
     constructor(props: Props) {
+        this.printTableParent = props.printTable
         this.onConfigUpdate = props.onConfigUpdate
         this.onAgencyListUpdate = props.onAgencyListUpdate
         this.onVehicleListUpdate = props.onVehicleListUpdate
@@ -48,46 +51,64 @@ class TransitService {
         this.startup()
     }
 
-    public config: Config = { route: undefined, agency: undefined, bufferWidth: 0.05 }
+    public config: Config = { static: false, route: undefined, agency: undefined, bufferWidth: 0.05 }
     public agencyList: AgencyItem[] = []
     public routeList: RouteItem[] = []
     public advice: Advice[] = []
-    public routeConfig: RouteConfig | undefined
+    public routeConfig: RouteConfig[] = []
     public vehicleList: VehicleList | undefined
     public lastTime = 0
     public lastRun = new Date()
+    private printTable = (status: Partial<Status>) => {
+        this.printTableParent({
+            agency: this.config.agency?.title,
+            route: this.config.route?.title,
+            ...status
+        })
+    }
+    private printTableParent: (status: Partial<Status>) => void
+
     public setTempAgency = async (tempAgency: AgencyItem) => {
         const list = await RouteLoader(tempAgency)
-        console.log({ Routelist: list.length })
+        this.printTable({ routeList: list.length })
         await this.onRouteListUpdate(list)
     }
     private vehicleInterval = setInterval(() => {
-        console.log("Set Interval 10s");
+        this.printTable({ vehicleInterval: "10s" })
         this.loadVehicleData();
     }, 10000);
+
     public loadConfig = () => {
-        console.log("Loading Config")
+        this.printTable({ configLoaded: "Loading" })
         const file = process.argv[4]
-        fs.readFile(file, "utf8", (err, data) => {
+        fs.readFile(file, "utf8", async (err, data) => {
             if (err) {
                 console.error(err);
+                this.printTable({ configLoaded: "Error Reading File" + err })
+
             } else {
                 try {
                     const config = JSON.parse(data);
-                    if (config.agency.type == DataSource.Test) {
-                        console.log("Turning off Vehicle Timer")
+                    if (config.static == true || config.agency.type == DataSource.Test) {
                         clearInterval(this.vehicleInterval)
+                        this.printTable({ vehicleTimer: "Stopped for Testing" })
                     }
-                    console.log("Config file read successfully");
-                    this.setConfig(config)
+                    this.printTable({ configLoaded: "Read Success" })
+                    await this.setConfig(config)
+                    this.printTable({ configLoaded: "Success" })
+
                 } catch (e) {
-                    console.log("File Load Error" + e)
+                    this.printTable({ configLoaded: "Error Parsing File" + e })
+
                 }
             }
         })
+
     }
+
     private getUniqueDirections = () => {
-        return [...new Set(this.routeConfig?.directions.map(x => x.name) ?? [])]
+        const currentRouteConfig = this.routeConfig.filter((routeConfig) => { return routeConfig.route.id == this.config.route?.id })[0]
+        return [...new Set(currentRouteConfig.directions.map(x => x.name) ?? [])]
     }
     private getVehiclesByDirection = (vehicleList: VehicleList, direction: string | undefined) => {
         return vehicleList?.data.filter(x => x.direction === direction)
@@ -127,7 +148,7 @@ class TransitService {
         try { bufferedRouteUnion = turf.union(z2) }
         catch (e) {
             bufferedRouteUnion = null
-            console.log("Buffered Route Union Error")
+            this.printTable({ bufferedRoute: "Error" + e });
         }
         return bufferedRouteUnion
     }
@@ -181,84 +202,113 @@ class TransitService {
         return rc
     }
     public saveConfig = (config: Config) => {
-        console.log("Saving Config")
-
+        this.printTable({ configSaving: "Saving" })
         const file = process.argv[4]
         fs.writeFile(file, JSON.stringify(config), err => {
             if (err) {
-                console.error(err);
+                this.printTable({ configSaving: "Error" + err })
             } else {
-                console.log("File written successfully");
-                // file written successfully
+                this.printTable({ configSaving: "Saved" })
             }
         });
         this.setConfig(config)
     }
     public saveData = () => {
-        console.log("Saving Data")
+        this.printTable({ dataSaving: "Saving" })
         const file = "data-" + Date.now() + ".json"
         fs.writeFile(file, JSON.stringify(this.historyList), err => {
             if (err) {
-                console.error(err);
+                this.printTable({ dataSaving: "Error" + err })
             } else {
-                console.log("File written successfully");
-                // file written successfully
+                this.printTable({ dataSaving: "Saved" })
             }
         });
     }
     private loadVehicleData = async () => {
-        console.log("Running Loading Vehicle Data")
+        this.printTable({ vehicleLoad: "Loading" });
         if (this.config.agency && this.config.route) {
             this.lastRun = new Date();
             try {
                 await this.startGetVehicleList();
+                this.printTable({ vehicleLoad: "Done" });
+
             } catch (e) {
-                console.log(e);
+                this.printTable({ vehicleLoad: "Error" + e });
             }
         }
+
     };
     private startup = async () => {
-        console.log("Starting Transit Service")
+        this.printTable({ agencyList: "Loading" })
         const list = await AgencyLoader(DataSource.NextBus)
         this.agencyList = [...this.agencyList, ...list];
-        console.log({ AgencyList: this.agencyList.length })
+        this.printTable({ agencyList: this.agencyList.length })
         await this.onAgencyListUpdate(this.agencyList)
-        this.loadConfig()
+        await this.loadConfig()
+
+    }
+    private processRoute = async (agency: AgencyItem, route: RouteItem) => {
+
+        const routeConfig = await RouteConfigLoader(agency, route)
+        const processedConfig = this.processRouteConfig(routeConfig)
+
+        this.printTable({ cameras: "Loading" })
+        processedConfig.cameras = await LoadTorontoCameras(processedConfig)
+        this.printTable({ cameras: processedConfig.cameras?.length })
+
+        //  processedConfig.trafficLights = await LoadTorontoTrafficLights(processedConfig)
+        this.printTable({ trafficLights: "Loading" })
+        processedConfig.trafficLights = await getTrafficLights(processedConfig)
+        this.printTable({ trafficLights: processedConfig.trafficLights?.length })
+
+        this.printTable({ trafficStops: "Loading" })
+        processedConfig.trafficStops = await getTrafficStops(processedConfig)
+        this.printTable({ trafficStops: processedConfig.trafficStops?.length })
+
+        this.routeConfig.push(processedConfig)
+        this.printTable({ routeCount: this.routeConfig.length })
+
+        this.printTable({ advice: "Loading" })
+        this.advice == getAdviceForRoute(processedConfig)
+        this.printTable({ advice: this.advice.length })
 
     }
     public setConfig = async (config: Config) => {
-        console.log("Setting agency")
+        this.printTable({ processingConfig: "In Progress..." })
         this.config = config
-        if (!this.config.agency)
-            this.routeList = []
-        else {
-            const list = await RouteLoader(this.config.agency)
-            this.routeList = list
+        if (!this.config.static) {
+            if (!this.config.agency)
+                this.routeList = []
+            else {
+                const list = await RouteLoader(this.config.agency)
+                this.routeList = list
+            }
+            this.printTable({ routeList: this.routeList.length })
+
+            await this.onRouteListUpdate(this.routeList)
+            if (!this.config.route)
+                this.routeConfig = []
+            else {
+                if (this.config.agency)
+                    await this.processRoute(this.config.agency, this.config.route)
+            }
+            this.printTable({ processingConfig: "Done" })
+            this.printTable({ routeCount: this.routeConfig.length })
+            await this.onRouteConfigUpdate(this.routeConfig)
+            await this.onAdviceUpdate(this.advice)
+        } else {
+            await this.agencyList.forEach(async (agency) => {
+                if (agency.type == DataSource.NextBus) {
+                    const routeList = await RouteLoader(agency)
+                    await routeList.forEach(async (route) => {
+                        await this.processRoute(agency, route)
+                        await this.onRouteConfigUpdate(this.routeConfig)
+                        await this.onAdviceUpdate(this.advice)
+                    })
+                }
+            })
+
         }
-        console.log({ Routelist: this.routeList.length })
-        await this.onRouteListUpdate(this.routeList)
-        if (!this.config.route)
-            this.routeConfig = undefined
-
-        else {
-            const routeConfig = await RouteConfigLoader(this.config.agency, this.config.route)
-            const processedConfig = this.processRouteConfig(routeConfig)
-
-            console.log("Load Toronto Specifc Data")
-            processedConfig.cameras = await LoadTorontoCameras(processedConfig)
-            //  processedConfig.trafficLights = await LoadTorontoTrafficLights(processedConfig)
-            processedConfig.trafficLights = await getTrafficLights(processedConfig)
-            processedConfig.trafficStops = await getTrafficStops(processedConfig)
-            this.routeConfig = processedConfig
-
-            console.log("Getting Advice")
-            const advice = getAdviceForRoute(this.routeConfig)
-            this.advice = advice
-        }
-        // console.log({ RouteConfig: this.routeConfig })
-        console.log("Done Setting Config")
-        await this.onRouteConfigUpdate(this.routeConfig)
-        await this.onAdviceUpdate(this.advice)
     }
     public getHeadway = (vehicleList: VehicleList, historyList: UniqueSet<DataVehicleItem>): DataVehicleItem[] => {
 
@@ -292,15 +342,16 @@ class TransitService {
         return data
     }
     public startGetVehicleList = async () => {
-        console.log("Starting Vehicle List")
+        this.printTable({ vehicleTimer: "Running" })
         if (!this.config.route)
             return
         const list = await VehicleLoader(this.config.agency, this.config.route, this.lastTime)
 
         list.data = list.data.map((item) => {
-            const direction = this.routeConfig?.directions.filter((direction) => { return direction.id == item.dir })[0]
+            const currentRouteConfig = this.routeConfig?.filter((routeConfig) => { return routeConfig.route.id == this.config.route?.id })[0]
+            const direction = currentRouteConfig.directions.filter((direction) => { return direction.id == item.dir })[0]
             // const firstStop = direction?.stops[0]
-            const firstStop = this.routeConfig?.stops[0]
+            const firstStop = currentRouteConfig.stops[0]
             //   const firstStopInfo = this.routeConfig?.stops.filter((stop) => { return stop.id == firstStop?.id })[0]
             if (firstStop) {
                 const distanceFromStop = getDistanceFromLatLonInKm(item.position, firstStop.position)
@@ -312,7 +363,7 @@ class TransitService {
 
             var directionL
             if (item.dir) {
-                directionL = this.routeConfig?.directions.filter((directionA) => {
+                directionL = currentRouteConfig.directions.filter((directionA) => {
                     return directionA.id == item.dir
                 })[0].name
             }
@@ -325,8 +376,7 @@ class TransitService {
         list.data.forEach((item) => {
             this.historyList = this.historyList.add(item)
         })
-        console.log({ 'VehicleList Loaded': this.vehicleList.data.length })
-        console.log({ 'history length': this.historyList.size })
+        this.printTable({ vehicleData: "Loaded: " + this.vehicleList.data.length + ", History:" + this.historyList.size })
 
         await this.onVehicleListUpdate(this.vehicleList)
 

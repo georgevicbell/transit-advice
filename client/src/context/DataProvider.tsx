@@ -18,11 +18,12 @@ export function DataProvider(props: Props) {
   const [advice, setAdvice] = useState<Advice[]>([]);
   const [historyList, setHistoryList] = useState<DataVehicleItem[]>([]);
   const [routeList, setRouteList] = useState<RouteItem[]>([]);
-  const [routeConfig, setRouteConfig] = useState<RouteConfig | undefined>();
+  const [routeConfig, setRouteConfig] = useState<RouteConfig[]>([]);
   const [vehicleList, setVehicleList] = useState<VehicleList | undefined>();
   const dataClientRef = useRef<DataClientRef>(null);
+  const currentRouteConfig = routeConfig[0]
   const getUniqueDirections = () => {
-    return [...new Set(routeConfig?.directions.map(x => x.name) ?? [])]
+    return [...new Set(currentRouteConfig.directions.map(x => x.name) ?? [])]
   }
   const getVehiclesByDirection = (direction: string | undefined) => {
     return vehicleList?.data.filter(x => x.direction === direction)
@@ -66,7 +67,7 @@ export function DataProvider(props: Props) {
           setTempAgency,
           getUniqueDirections,
           getVehiclesByDirection,
-
+          currentRouteConfig,
           server, setServer,
           historyList,
           advice,

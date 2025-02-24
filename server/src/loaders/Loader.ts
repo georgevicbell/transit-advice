@@ -41,13 +41,15 @@ export async function RouteConfigLoader(agency: AgencyItem | undefined, route: R
             "&r=" +
             route.id,
         );
-        const config = await NextBusTransformRouteConfig(data)
+        const config = await NextBusTransformRouteConfig(data, agency, route)
         return config
     }
     else if (route.type === DataSource.UK) {
         if (!agency) return {} as RouteConfig
+        console.log("S1")
         const data = await UKRouteConfigLoader(agency.id, route.id)
-        const list = UKTransformRouteConfig(data, route.id)
+        console.log("S2")
+        const list = UKTransformRouteConfig(data, agency, route)
         return list
     }
     else if (route.type === DataSource.Test) {
@@ -55,6 +57,8 @@ export async function RouteConfigLoader(agency: AgencyItem | undefined, route: R
         return config
     }
     return {
+        agency: agency ?? { id: "", title: "", type: DataSource.NextBus, state: "", country: "", areas: undefined, typeOf: "AgencyItem" },
+        route: route,
         maxStopDistance: 0,
         bufferedRoute: null,
         color: "",

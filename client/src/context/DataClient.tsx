@@ -10,7 +10,7 @@ type PropsDataClient = {
     onReturnAgencyList: Dispatch<SetStateAction<AgencyItem[]>>
     onReturnRouteList: Dispatch<SetStateAction<RouteItem[]>>
     onReturnAdvice: Dispatch<SetStateAction<Advice[]>>
-    onReturnRouteConfig: Dispatch<SetStateAction<RouteConfig | undefined>>
+    onReturnRouteConfig: Dispatch<SetStateAction<RouteConfig[]>>
     server: Server
     config: Config | undefined
 }
@@ -76,7 +76,8 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
             }
             else if (json.type == "responseRouteConfig") {
                 console.log("SETTING ROUTE CONFIG")
-                const z = json.text as RouteConfig
+                const z = json.text as RouteConfig[]
+                console.log({ routeconfig: z })
                 props.onReturnRouteConfig(z)
             }
             else if (json.type == "responseVehicleList") {

@@ -8,10 +8,10 @@ export type DataContext = {
   setServer: Dispatch<SetStateAction<Server>>
   agencyList: AgencyItem[]
   routeList: RouteItem[]
-  routeConfig: RouteConfig | undefined
+  routeConfig: RouteConfig[]
   setCurrentCollisionId: (index: string) => void
   config: Config | undefined
-
+  currentRouteConfig: RouteConfig | undefined
   setTempAgency: (agency: AgencyItem | undefined) => void
   advice: Advice[]
   vehicleList: VehicleList | undefined
@@ -30,14 +30,15 @@ export const DataContext = createContext<DataContext>({
   getUniqueDirections: () => [],
   getVehiclesByDirection: () => [],
   setTempAgency: () => { },
+  currentRouteConfig: undefined,
   advice: [],
   setServer: () => { },
   saveConfig: () => { },
   saveData: () => { },
   agencyList: [],
   routeList: [],
-  config: { route: undefined, agency: undefined, bufferWidth: 0.05 },
-  routeConfig: undefined,
+  config: { static: false, route: undefined, agency: undefined, bufferWidth: 0.05 },
+  routeConfig: [],
 
   setCurrentCollisionId: () => { },
   vehicleList: undefined,

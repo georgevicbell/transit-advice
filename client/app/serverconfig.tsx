@@ -128,11 +128,19 @@ export default function Page() {
                     config?.route?.id == route?.id &&
                     config?.bufferWidth == bufferWidth} style={{ borderWidth: 1, borderRadius: 5, padding: 5 }} onPress={() => {
                         if (agency && route)
-                            saveConfig({ agency, route, bufferWidth })
+                            saveConfig({ static: false, agency, route, bufferWidth })
                         else
                             alert("Please select agency and route")
                     }}>
                     <Text>Save Config</Text>
+                </Pressable>
+                <Pressable style={{ borderWidth: 1, borderRadius: 5, padding: 5 }} onPress={() => {
+                    if (agency && route)
+                        saveConfig({ static: true, agency: undefined, route: undefined, bufferWidth })
+                    else
+                        alert("Please select agency and route")
+                }}>
+                    <Text>Static Config</Text>
                 </Pressable>
                 <Pressable style={{ borderWidth: 1, borderRadius: 5, padding: 5 }} onPress={saveData}>
                     <Text>Save Data</Text>

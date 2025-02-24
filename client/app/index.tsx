@@ -33,20 +33,20 @@ export default function Page() {
     const [busSize, setBusSize] = React.useState(7);
     const [showCamera, setShowCamera] = React.useState<CameraItem>();
     if (!styles) return null
-    const { vehicleList, config, agencyList, routeList, routeConfig } = useContext(DataContext)
+    const { vehicleList, config, currentRouteConfig, agencyList, routeList, routeConfig } = useContext(DataContext)
     useEffect(() => {
-        if (!routeConfig) return
+        if (!currentRouteConfig) return
         const region = {
-            latitude: routeConfig.bounds.min.lat,
-            longitude: routeConfig.bounds.max.lon,
-            latitudeDelta: (routeConfig.bounds.max.lat - routeConfig.bounds.min.lat + 0.05),
-            longitudeDelta: (routeConfig.bounds.max.lon - routeConfig.bounds.min.lon + 0.05),
+            latitude: currentRouteConfig.bounds.min.lat,
+            longitude: currentRouteConfig.bounds.max.lon,
+            latitudeDelta: (currentRouteConfig.bounds.max.lat - currentRouteConfig.bounds.min.lat + 0.05),
+            longitudeDelta: (currentRouteConfig.bounds.max.lon - currentRouteConfig.bounds.min.lon + 0.05),
         }
         mapViewRef.current?.animateToRegion(region, 100)
-    }, [mapViewRef.current, routeConfig])
+    }, [mapViewRef.current, currentRouteConfig])
     function BufferedRoute() {
         if (!showBufferedRoute) return null;
-        return routeConfig?.bufferedRoute?.geometry.coordinates.map((line, index) => {
+        return currentRouteConfig?.bufferedRoute?.geometry.coordinates.map((line, index) => {
             const coords = line.map<LatLng>((x: any) => {
 
                 const z: LatLng = { latitude: x[1], longitude: x[0] }
@@ -62,7 +62,7 @@ export default function Page() {
         if (!showCameras) return null;
         return (
             <>
-                {routeConfig?.cameras.map((z, index) => {
+                {currentRouteConfig?.cameras.map((z, index) => {
                     if (z == undefined) return null;
 
                     return (
@@ -91,7 +91,7 @@ export default function Page() {
         if (!showTrafficLights) return null;
         return (
             <>
-                {routeConfig?.trafficLights.map((z, index) => {
+                {currentRouteConfig?.trafficLights.map((z, index) => {
                     if (z == undefined) return null;
 
                     return (
@@ -117,7 +117,7 @@ export default function Page() {
         if (!showTrafficStops) return null;
         return (
             <>
-                {routeConfig?.trafficStops.map((z, index) => {
+                {currentRouteConfig?.trafficStops.map((z, index) => {
                     if (z == undefined) return null;
 
                     return (
@@ -144,7 +144,7 @@ export default function Page() {
         if (!showStops) return null;
         return (
             <>
-                {routeConfig?.stops.map((z, index) => {
+                {currentRouteConfig?.stops.map((z, index) => {
                     if (z == undefined) return null;
 
                     return (
@@ -160,7 +160,7 @@ export default function Page() {
                             title={z.id}
 
                         >
-                            <Stop stopSize={stopSize} color={routeConfig.color} data={z} />
+                            <Stop stopSize={stopSize} color={currentRouteConfig.color} data={z} />
                         </Marker>
                     );
                 })}
@@ -198,7 +198,7 @@ export default function Page() {
         if (!showRoute) return null;
         return (
             <>
-                {routeConfig?.routeMap.map((routeMap, index) => {
+                {currentRouteConfig?.routeMap.map((routeMap, index) => {
                     return (
                         <Polyline
                             zIndex={1}
@@ -206,8 +206,8 @@ export default function Page() {
                             coordinates={routeMap.map((item) => {
                                 return { latitude: item.lat, longitude: item.lon };
                             })}
-                            strokeColor={"#" + routeConfig.color} // fallback for when `strokeColors` is not supported by the map-provider
-                            strokeColors={["#" + routeConfig.color]}
+                            strokeColor={"#" + currentRouteConfig.color} // fallback for when `strokeColors` is not supported by the map-provider
+                            strokeColors={["#" + currentRouteConfig.color]}
                             strokeWidth={1}
                         />
                     );
@@ -269,13 +269,13 @@ export default function Page() {
                         showsPointsOfInterest={false}
                         showsTraffic={false}
                         showsBuildings={false}
-                        minZoomLevel={10}
+                        minZoomLevel={1}
                         pitchEnabled={false}
                         zoomControlEnabled={false}
 
                         showsUserLocation={false}
                         animationEnabled={true}
-                        initialRegion={{ latitude: 13.6532, longitude: -39.3832, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
+                        initialRegion={{ latitude: 43.6532, longitude: -79.3832, latitudeDelta: 10.1, longitudeDelta: 10.1 }}
                         showsCompass={false}
                         loadingFallback={
                             <View>
@@ -294,7 +294,7 @@ export default function Page() {
                         <RouteMapGroup />
 
                         <ScrollView style={{ top: "80%", left: "1%", width: "98%", bottom: 30, position: "absolute", flexDirection: "column", padding: 0, backgroundColor: "#eee", borderWidth: 1, borderRadius: 10 }}>
-                            <View style={{ padding: 3, backgroundColor: "#aaa" }}><Text style={{ fontWeight: "bold", fontSize: 10 }}>{config?.agency?.title} - {config?.route?.title}</Text></View>
+                            <View style={{ padding: 3, backgroundColor: "#aaa" }}><Text style={{ fontWeight: "bold", fontSize: 10 }}>{currentRouteConfig?.agency?.title} - {currentRouteConfig?.route?.title}</Text></View>
                             <View style={{ flexDirection: "row" }}>
                                 <Chip value={showStops} onPress={setShowStops} >Stops</Chip>
                                 <Chip value={showRoute} onPress={setShowRoute} >Route</Chip>

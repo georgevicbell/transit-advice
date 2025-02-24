@@ -376,7 +376,8 @@ const getStopTimes = (stopTimes: string | undefined) => {
 }
 export function UKTransformRouteConfig(
   data: GTFSOutput,
-  routeId: string
+  agency: AgencyItem,
+  route: RouteItem
 ): RouteConfig {
   console.log("Start UK Transform Complete");
   const stops = getStops(data.stops)
@@ -385,7 +386,7 @@ export function UKTransformRouteConfig(
   const stopTimes = getStopTimes(data.stopTimes)
   console.log("UK Transform Complete");
 
-  const activeTrips = trips?.filter((z) => { return z?.routeId == routeId });
+  const activeTrips = trips?.filter((z) => { return z?.routeId == route.id });
   const activeTripIds = unique(activeTrips ?? [], "id").map((z) => z.id);
   console.log(activeTripIds);
   const activeShapeIds = unique(activeTrips ?? [], "shapeId").map(
@@ -423,6 +424,8 @@ export function UKTransformRouteConfig(
     .flat();
 
   return {
+    agency: agency,
+    route: route,
     maxStopDistance: 0.1,
     bufferedRoute: null,
     directions: [],

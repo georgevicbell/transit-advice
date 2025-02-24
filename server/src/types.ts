@@ -51,6 +51,8 @@ export type RouteItem = {
     typeOf: "RouteItem";
 };
 export type RouteConfig = {
+    agency: AgencyItem;
+    route: RouteItem;
     maxStopDistance: number
     bufferedRoute: (Feature<Polygon | MultiPolygon, GeoJsonProperties> | null);
     color: string;
@@ -94,6 +96,7 @@ export type RouteBounds = {
     max: Position
 };
 export type Config = {
+    static: boolean
     route: RouteItem | undefined,
     agency: AgencyItem | undefined,
     bufferWidth: number | undefined

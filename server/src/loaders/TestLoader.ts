@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { AgencyItem, RouteConfig, RouteItem } from "../types";
+import { AgencyItem, DataSource, RouteConfig, RouteItem } from "../types";
 export async function TestRouteLoader(agency: AgencyItem): Promise<RouteItem[]> {
     console.log("START")
     try {
@@ -26,6 +26,8 @@ export async function TestRouteConfigLoader(agency: AgencyItem | undefined, rout
     }
 
     return {
+        agency: agency ?? { id: "", title: "", type: DataSource.NextBus, state: "", country: "", areas: undefined, typeOf: "AgencyItem" },
+        route: route,
         maxStopDistance: 0,
         bufferedRoute: null,
         color: "",

@@ -28,18 +28,18 @@ export default function Page() {
     const styles = useStyleContext();
     const mapViewRef = useRef<MapView>(null);
     if (!styles) return null
-    const { historyList, vehicleList, config, agencyList, routeList, routeConfig } = useContext(DataContext)
+    const { historyList, currentRouteConfig, vehicleList, config, agencyList, routeList, routeConfig } = useContext(DataContext)
     const [showStops, setShowStops] = React.useState<{ [id: string]: boolean }>({})
     const [time, setTime] = useState("60")
 
-    const maxLength = routeConfig?.maxStopDistance ?? 0
+    const maxLength = currentRouteConfig?.maxStopDistance ?? 0
 
     const groupBuses = Object.groupBy(historyList, ({ id }) => id);
-    const dirs = Object.groupBy(routeConfig?.directions ?? [], ({ name }) => name);
+    const dirs = Object.groupBy(currentRouteConfig?.directions ?? [], ({ name }) => name);
 
     return (
         <View style={{ flex: 1 }}>
-            <TextR >{config?.agency?.title} - {config?.route?.title} </TextR>
+            <TextR >{currentRouteConfig?.agency?.title} - {currentRouteConfig?.route?.title} </TextR>
             <View style={{ flexDirection: "column", }}>
                 <Chip onPress={() => time == "24" ? setTime("60") : setTime("24")} value={time == "24"} >24 hour</Chip>
                 {
@@ -47,7 +47,7 @@ export default function Page() {
                         return <View style={{ flexDirection: "row", flexWrap: "wrap" }} key={z}>
                             <TextR>{z}</TextR>
                             {
-                                routeConfig?.directions.filter(d => d.name == z).map((direction, index) => {
+                                currentRouteConfig?.directions.filter(d => d.name == z).map((direction, index) => {
                                     return <Chip key={index} onPress={(x) => {
                                         setShowStops(z1 => {
                                             const d1 = { ...z1 }
@@ -91,10 +91,10 @@ export default function Page() {
                             return <Line key={index} x1={x} x2={x} y1={0} y2={1000} stroke="lightGray" strokeWidth={1} />
                         })
                 }
-                {routeConfig?.directions.map((direction, index) => {
+                {currentRouteConfig?.directions.map((direction, index) => {
                     if (showStops[direction.id]) {
                         const stops = direction.stops.map((stop, index) => {
-                            const title = routeConfig?.stops.filter((configStop) => configStop.id === stop.id)[0].title
+                            const title = currentRouteConfig?.stops.filter((configStop) => configStop.id === stop.id)[0].title
                             const x = 1000 - (stop.distanceFromStart / maxLength * 1000)
                             return <React.Fragment key={index}>
                                 <Line x1={0} x2={2000} y1={x} y2={x} stroke="lightGray" strokeWidth={1} />

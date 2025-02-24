@@ -3,9 +3,8 @@ import { Text, View } from "react-native"
 import { DataContext } from "../src/context/DataContext"
 
 export default function Simple() {
-    const { getVehiclesByDirection, routeConfig } = useContext(DataContext)
-
-    const uniqueDirections = [...new Set(routeConfig?.directions.map(x => x.name) ?? [])]
+    const { getVehiclesByDirection, routeConfig, config, currentRouteConfig } = useContext(DataContext)
+    const uniqueDirections = [...new Set(currentRouteConfig?.directions.map(x => x.name) ?? [])]
     return <View style={{ margin: 10, flexDirection: "column" }}>
         {uniqueDirections.map((dir, index) => {
             return <View key={index}>

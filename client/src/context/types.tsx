@@ -28,6 +28,8 @@ export type RouteItem = {
 };
 
 export type RouteConfig = {
+    agency: AgencyItem;
+    route: RouteItem;
     maxStopDistance: number
     color: string;
     bufferedRoute: (Feature<Polygon | MultiPolygon, GeoJsonProperties> | null);
@@ -98,6 +100,7 @@ export type DataVehicleItem = {
 
 };
 export type Config = {
+    static: boolean
     agency: AgencyItem | undefined
     route: RouteItem | undefined
     bufferWidth: number
