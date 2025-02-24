@@ -17,12 +17,17 @@ export type RouteBounds = {
 
 export async function NextBusLoader(
   baseUrl: string,
-): Promise<Record<string, any>> {
-  const text = await fetch(baseUrl)
-  const baseJson = JSON.parse(await text.text());
-
-
-  return baseJson;
+): Promise<{ data: Record<string, any>, loaded: boolean }> {
+  var data, loaded = false;
+  try {
+    const text = await fetch(baseUrl)
+    data = JSON.parse(await text.text());
+    loaded = true
+  } catch (e) {
+    console.log(e)
+    data = {}
+  }
+  return { data, loaded };
 }
 const GetCountry = (region: string) => {
   switch (region) {

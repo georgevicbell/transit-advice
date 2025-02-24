@@ -21,7 +21,8 @@ export function DataProvider(props: Props) {
   const [routeConfig, setRouteConfig] = useState<RouteConfig[]>([]);
   const [vehicleList, setVehicleList] = useState<VehicleList | undefined>();
   const dataClientRef = useRef<DataClientRef>(null);
-  const currentRouteConfig = routeConfig[0]
+  const [rcIndex, setRCIndex] = useState(0);
+  const currentRouteConfig = routeConfig[rcIndex]
   const getUniqueDirections = () => {
     return [...new Set(currentRouteConfig.directions.map(x => x.name) ?? [])]
   }
@@ -29,7 +30,12 @@ export function DataProvider(props: Props) {
     return vehicleList?.data.filter(x => x.direction === direction)
       .sort((a, b) => a.distanceFromStop - b.distanceFromStop) ?? []
   }
-
+  const nextRC = () => {
+    setRCIndex((x) => x + 1);
+  }
+  const prevRC = () => {
+    setRCIndex((x) => x - 1);
+  }
   const setCurrentCollisionId = (index: string) => {
     router.push(`/collision/${index}`);
   }
@@ -79,6 +85,8 @@ export function DataProvider(props: Props) {
           routeList,
           vehicleList,
           setCurrentCollisionId,
+          nextRC,
+          prevRC,
         }}
       >
 

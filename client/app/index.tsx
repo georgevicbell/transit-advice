@@ -2,7 +2,7 @@
 import { Image } from "expo-image";
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useEffect, useRef } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Chip from "../src/components/Chip";
 import VZModal from '../src/components/VZModal';
 import { DataContext } from '../src/context/DataContext';
@@ -33,7 +33,7 @@ export default function Page() {
     const [busSize, setBusSize] = React.useState(7);
     const [showCamera, setShowCamera] = React.useState<CameraItem>();
     if (!styles) return null
-    const { vehicleList, config, currentRouteConfig, agencyList, routeList, routeConfig } = useContext(DataContext)
+    const { vehicleList, config, currentRouteConfig, agencyList, routeList, routeConfig, nextRC, prevRC } = useContext(DataContext)
     useEffect(() => {
         if (!currentRouteConfig) return
         const region = {
@@ -294,7 +294,11 @@ export default function Page() {
                         <RouteMapGroup />
 
                         <ScrollView style={{ top: "80%", left: "1%", width: "98%", bottom: 30, position: "absolute", flexDirection: "column", padding: 0, backgroundColor: "#eee", borderWidth: 1, borderRadius: 10 }}>
-                            <View style={{ padding: 3, backgroundColor: "#aaa" }}><Text style={{ fontWeight: "bold", fontSize: 10 }}>{currentRouteConfig?.agency?.title} - {currentRouteConfig?.route?.title}</Text></View>
+                            <View style={{ padding: 3, backgroundColor: "#aaa" }}>
+                                <Text style={{ fontWeight: "bold", fontSize: 10 }}>{currentRouteConfig?.agency?.title} - {currentRouteConfig?.route?.title}</Text>
+                            </View>
+                            <Pressable onPress={prevRC}><Text>Previous</Text></Pressable>
+                            <Pressable onPress={nextRC}><Text>Next</Text></Pressable>
                             <View style={{ flexDirection: "row" }}>
                                 <Chip value={showStops} onPress={setShowStops} >Stops</Chip>
                                 <Chip value={showRoute} onPress={setShowRoute} >Route</Chip>

@@ -4,7 +4,8 @@ import { TestRouteConfigLoader, TestRouteLoader } from "./TestLoader";
 import { UKLoader, UKRouteConfigLoader, UKRouteLoader, UKTransformAgencies, UKTransformRouteConfig, UKTransformRoutes, UKTransformVehicles, UKVehicleLoader } from "./UKLoader";
 export async function RouteLoader(agency: AgencyItem): Promise<RouteItem[]> {
     if (agency.type === DataSource.NextBus) {
-        const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=routeList&a=" + agency.id);
+        const { data, loaded } = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=routeList&a=" + agency.id);
+        if (!loaded) return []
         const list = await NextBusTransformRoutes(data);
         return list
     }
@@ -21,7 +22,7 @@ export async function RouteLoader(agency: AgencyItem): Promise<RouteItem[]> {
 }
 export async function AgencyLoader(dataSource: DataSource): Promise<AgencyItem[]> {
     if (dataSource === DataSource.NextBus) {
-        const data = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=agencyList");
+        const { data, loaded } = await NextBusLoader("https://retro.umoiq.com/service/publicJSONFeed?command=agencyList");
         var list = await NextBusTransformAgencies(data);
         const uk = await UKLoader()
         const listUK = await UKTransformAgencies(uk)
@@ -35,7 +36,7 @@ export async function AgencyLoader(dataSource: DataSource): Promise<AgencyItem[]
 }
 export async function RouteConfigLoader(agency: AgencyItem | undefined, route: RouteItem): Promise<RouteConfig> {
     if (route.type === DataSource.NextBus) {
-        const data = await NextBusLoader(
+        const { data, loaded } = await NextBusLoader(
             "https://retro.umoiq.com/service/publicJSONFeed?command=routeConfig&verbose&a=" +
             agency?.id +
             "&r=" +
@@ -77,7 +78,7 @@ export async function RouteConfigLoader(agency: AgencyItem | undefined, route: R
 }
 export async function VehicleLoader(agency: AgencyItem | undefined, route: RouteItem, lastTime: number): Promise<VehicleList> {
     if (route.type === DataSource.NextBus) {
-        const dataA = await NextBusLoader(
+        const { data, loaded } = await NextBusLoader(
             "https://retro.umoiq.com/service/publicJSONFeed?command=vehicleLocations&a=" +
             agency?.id +
             "&r=" +
@@ -85,7 +86,7 @@ export async function VehicleLoader(agency: AgencyItem | undefined, route: Route
             "&t=" +
             lastTime
         );
-        var list = await NextBusTransformVehicles(dataA);
+        var list = await NextBusTransformVehicles(data);
         return list
     }
     else if (route.type === DataSource.UK) {

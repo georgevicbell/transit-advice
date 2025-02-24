@@ -19,6 +19,8 @@ export type DataContext = {
   getUniqueDirections: () => string[]
   saveConfig: (config: Config) => void
   saveData: () => void
+  nextRC: () => void
+  prevRC: () => void
   historyList: DataVehicleItem[]
 };
 export const DataContext = createContext<DataContext>({
@@ -27,6 +29,8 @@ export const DataContext = createContext<DataContext>({
     server: "http://localhost:8079",
     adminServer: "http://localhost:8080"
   },
+  nextRC: () => { },
+  prevRC: () => { },
   getUniqueDirections: () => [],
   getVehiclesByDirection: () => [],
   setTempAgency: () => { },

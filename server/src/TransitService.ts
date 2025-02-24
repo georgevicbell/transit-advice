@@ -134,6 +134,7 @@ class TransitService {
     }
     private getBufferedRoute = (rc: RouteConfig) => {
         const bufferedRoute = rc.routeMap?.map(z => {
+            if (!z) return
             const ls = turf.lineString(z.map((y) => {
                 return [y.lon, y.lat]
             }) ?? [], {})
