@@ -78,6 +78,8 @@ export type RouteBounds = {
 };
 
 export type VehicleList = {
+    agency: AgencyItem;
+    route: RouteItem;
     lastTime: number;
     data: DataVehicleItem[];
 };
@@ -156,6 +158,8 @@ export type TrafficLightItem = {
 }
 
 export type Advice = {
+    route: RouteItem;
+    agency: AgencyItem;
     message: string;
     type: string;
     date: number;

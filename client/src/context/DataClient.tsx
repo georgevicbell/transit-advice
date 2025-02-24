@@ -5,7 +5,7 @@ import { Advice, AgencyItem, Config, DataVehicleItem, RouteConfig, RouteItem, Se
 type PropsDataClient = {
     children: any
     onReturnHistoryList: (vl: DataVehicleItem[]) => void;
-    onReturnVehicleList: (vl: VehicleList) => void;
+    onReturnVehicleList: (vl: VehicleList[]) => void;
     onReturnConfig: Dispatch<SetStateAction<Config | undefined>>
     onReturnAgencyList: Dispatch<SetStateAction<AgencyItem[]>>
     onReturnRouteList: Dispatch<SetStateAction<RouteItem[]>>
@@ -82,7 +82,7 @@ export const DataClient = forwardRef<DataClientRef, PropsDataClient>((props, ref
             }
             else if (json.type == "responseVehicleList") {
                 console.log("SETTING VEHICLE LIST")
-                const z = json.text as VehicleList
+                const z = json.text as VehicleList[]
                 props.onReturnVehicleList(z)
             }
             else if (json.type == "responseConfig") {

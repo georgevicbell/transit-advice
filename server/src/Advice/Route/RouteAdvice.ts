@@ -8,6 +8,8 @@ export function StopLightAdvice(routeConfig: RouteConfig): Advice[] {
     const trafficLightsWithTransitPriorityDensity = numberOfTrafficLightsWithTransitPrioity / routeLength
     if (trafficLightDensity > 0.5) {
         advice.push({
+            agency: routeConfig.agency,
+            route: routeConfig.route,
             message: "This route has a high density of traffic lights",
             details: `There are ${numberOfTrafficLights} traffic lights on this ${routeLength.toFixed(2)} km route`,
             type: "Stop Light Advice",
@@ -17,6 +19,8 @@ export function StopLightAdvice(routeConfig: RouteConfig): Advice[] {
     }
 
     advice.push({
+        agency: routeConfig.agency,
+        route: routeConfig.route,
         message: "This route has a low density of traffic lights with transit priority",
         details: `There are ${numberOfTrafficLightsWithTransitPrioity} traffic lights with transit priority on this ${routeLength.toFixed(2)} km route out of ${numberOfTrafficLights} total`,
         type: "Stop Light Advice",
@@ -28,8 +32,10 @@ export function StopLightAdvice(routeConfig: RouteConfig): Advice[] {
 
 }
 
-export function speedLimitAdvice(): Advice[] {
+export function speedLimitAdvice(routeConfig: RouteConfig): Advice[] {
     return [{
+        agency: routeConfig.agency,
+        route: routeConfig.route,
         message: "Not Implemented",
         details: "We are still working on coding this feature",
         type: "Speed Limit Advice",
@@ -37,8 +43,10 @@ export function speedLimitAdvice(): Advice[] {
         priority: "info"
     }]
 }
-export function leftTurnAdvice(): Advice[] {
+export function leftTurnAdvice(routeConfig: RouteConfig): Advice[] {
     return [{
+        agency: routeConfig.agency,
+        route: routeConfig.route,
         message: "Not Implemented",
         details: "We are still working on coding this feature",
         type: "Left Turn Advice",
@@ -46,8 +54,10 @@ export function leftTurnAdvice(): Advice[] {
         priority: "info"
     }]
 }
-export function recoveryLocations(): Advice[] {
+export function recoveryLocations(routeConfig: RouteConfig): Advice[] {
     return [{
+        agency: routeConfig.agency,
+        route: routeConfig.route,
         message: "Not Implemented",
         details: "We are still working on coding this feature",
         type: "Schedule/Headway Recovery Locations",

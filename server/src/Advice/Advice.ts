@@ -2,8 +2,10 @@ import { Advice, RouteConfig } from '../types'
 import { StopLightAdvice, leftTurnAdvice, recoveryLocations, speedLimitAdvice } from './Route/RouteAdvice'
 
 
-function transitPriorityLanes(): Advice[] {
+function transitPriorityLanes(rc: RouteConfig): Advice[] {
     return [{
+        agency: rc.agency,
+        route: rc.route,
         message: "Not Implemented",
         details: "We are still working on coding this feature",
         type: "Transit Priority Lanes",
@@ -14,10 +16,10 @@ function transitPriorityLanes(): Advice[] {
 export function getAdviceForRoute(routeConfig: RouteConfig): Advice[] {
     var advice: Advice[] = []
     advice = [...advice, ...StopLightAdvice(routeConfig)]
-    advice = [...advice, ...speedLimitAdvice()]
-    advice = [...advice, ...leftTurnAdvice()]
-    advice = [...advice, ...recoveryLocations()]
-    advice = [...advice, ...transitPriorityLanes()]
+    advice = [...advice, ...speedLimitAdvice(routeConfig)]
+    advice = [...advice, ...leftTurnAdvice(routeConfig)]
+    advice = [...advice, ...recoveryLocations(routeConfig)]
+    advice = [...advice, ...transitPriorityLanes(routeConfig)]
     return advice
 }
 export function getAdviceForVehicles(): Advice[] {

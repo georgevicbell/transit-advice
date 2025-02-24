@@ -19,7 +19,7 @@ export function DataProvider(props: Props) {
   const [historyList, setHistoryList] = useState<DataVehicleItem[]>([]);
   const [routeList, setRouteList] = useState<RouteItem[]>([]);
   const [routeConfig, setRouteConfig] = useState<RouteConfig[]>([]);
-  const [vehicleList, setVehicleList] = useState<VehicleList | undefined>();
+  const [vehicleList, setVehicleList] = useState<VehicleList[]>([]);
   const dataClientRef = useRef<DataClientRef>(null);
   const [rcIndex, setRCIndex] = useState(0);
   const currentRouteConfig = routeConfig[rcIndex]
@@ -27,7 +27,7 @@ export function DataProvider(props: Props) {
     return [...new Set(currentRouteConfig.directions.map(x => x.name) ?? [])]
   }
   const getVehiclesByDirection = (direction: string | undefined) => {
-    return vehicleList?.data.filter(x => x.direction === direction)
+    return vehicleList[0].data.filter(x => x.direction === direction)
       .sort((a, b) => a.distanceFromStop - b.distanceFromStop) ?? []
   }
   const nextRC = () => {
@@ -61,7 +61,7 @@ export function DataProvider(props: Props) {
       }}
       onReturnVehicleList={(vl) => {
         setVehicleList(vl)
-        setHistoryList((x) => [...x, ...vl?.data ?? []])
+        setHistoryList((x) => [...x, ...vl[0].data ?? []])
       }}
       onReturnConfig={setConfig}
       config={config}

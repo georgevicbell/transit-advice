@@ -73,9 +73,12 @@ export async function UKTransformAgencies(
   return result;
 }
 export function UKTransformVehicles(
-  data: GtfsRealtimeBindings.transit_realtime.FeedMessage | null
+  data: GtfsRealtimeBindings.transit_realtime.FeedMessage | null,
+  agency: AgencyItem | undefined, route: RouteItem
 ): VehicleList {
   const output = {
+    agency: agency ?? { id: "", title: "", type: DataSource.NextBus, state: "", country: "", areas: undefined, typeOf: "AgencyItem" },
+    route: route,
     lastTime: (data?.entity[0]?.vehicle?.timestamp ?? 0) as number,
     data:
       data?.entity.map((z) => {

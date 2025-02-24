@@ -86,15 +86,17 @@ export async function VehicleLoader(agency: AgencyItem | undefined, route: Route
             "&t=" +
             lastTime
         );
-        var list = await NextBusTransformVehicles(data);
+        var list = await NextBusTransformVehicles(data, agency, route);
         return list
     }
     else if (route.type === DataSource.UK) {
         const data = await UKVehicleLoader(route.id)
-        const list = UKTransformVehicles(data)
+        const list = UKTransformVehicles(data, agency, route)
         return list
     }
     return {
+        agency: agency ?? { id: "", title: "", type: DataSource.NextBus, state: "", country: "", areas: undefined, typeOf: "AgencyItem" },
+        route: route,
         lastTime: 0, data: []
     }
 }

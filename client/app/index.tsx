@@ -172,7 +172,7 @@ export default function Page() {
         if (!showVehicles) return null;
         return (
             <>
-                {vehicleList?.data.map((z, index) => {
+                {vehicleList[0].data.map((z, index) => {
                     if (z == undefined) return null;
                     const config = getConfigFromDir(z.direction ?? "")
                     return (

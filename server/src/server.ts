@@ -97,7 +97,7 @@ const sendRouteConfig = async (routeConfig: RouteConfig[]) => {
             sendMessage(client, "responseRouteConfig", routeConfig)
         })
 }
-const sendVehicleList = async (vehicleList: VehicleList | undefined) => {
+const sendVehicleList = async (vehicleList: VehicleList[]) => {
     webSocketServer.clients.forEach(
         (client: any) => {
             printTable({ messages: [...status.messages, "sendVehicleList"] })

@@ -14,7 +14,7 @@ export type DataContext = {
   currentRouteConfig: RouteConfig | undefined
   setTempAgency: (agency: AgencyItem | undefined) => void
   advice: Advice[]
-  vehicleList: VehicleList | undefined
+  vehicleList: VehicleList[]
   getVehiclesByDirection: (direction: string | undefined) => DataVehicleItem[]
   getUniqueDirections: () => string[]
   saveConfig: (config: Config) => void
@@ -45,7 +45,7 @@ export const DataContext = createContext<DataContext>({
   routeConfig: [],
 
   setCurrentCollisionId: () => { },
-  vehicleList: undefined,
+  vehicleList: [],
   historyList: []
 });
 

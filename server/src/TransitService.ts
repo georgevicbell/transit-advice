@@ -13,7 +13,7 @@ type Props = {
     onConfigUpdate: (config: Config) => Promise<void>
     onAgencyListUpdate: (agencyList: AgencyItem[]) => Promise<void>
     onRouteListUpdate: (routeList: RouteItem[]) => Promise<void>
-    onVehicleListUpdate: (vehicleList: VehicleList | undefined) => Promise<void>
+    onVehicleListUpdate: (vehicleList: VehicleList[]) => Promise<void>
     onRouteConfigUpdate: (routeInfo: RouteConfig[]) => Promise<void>
     onAdviceUpdate: (advice: Advice[]) => Promise<void>
     printTable: (status: Partial<Status>) => void
@@ -37,7 +37,7 @@ class TransitService {
     private onAgencyListUpdate: (agencyList: AgencyItem[]) => Promise<void>;
     private onRouteListUpdate: (routeList: RouteItem[]) => Promise<void>
     private onRouteConfigUpdate: (routeList: RouteConfig[]) => Promise<void>
-    private onVehicleListUpdate: (vehicleList: VehicleList | undefined) => Promise<void>
+    private onVehicleListUpdate: (vehicleList: VehicleList[]) => Promise<void>
     private onAdviceUpdate: (advice: Advice[]) => Promise<void>
     public historyList: UniqueSet<DataVehicleItem> = new UniqueSet()
     constructor(props: Props) {
@@ -56,7 +56,7 @@ class TransitService {
     public routeList: RouteItem[] = []
     public advice: Advice[] = []
     public routeConfig: RouteConfig[] = []
-    public vehicleList: VehicleList | undefined
+    public vehicleList: VehicleList[] = []
     public lastTime = 0
     public lastRun = new Date()
     private printTable = (status: Partial<Status>) => {
@@ -270,7 +270,7 @@ class TransitService {
         this.printTable({ routeCount: this.routeConfig.length })
 
         this.printTable({ advice: "Loading" })
-        this.advice == getAdviceForRoute(processedConfig)
+        this.advice = [...this.advice, ...getAdviceForRoute(processedConfig)]
         this.printTable({ advice: this.advice.length })
 
     }
@@ -373,11 +373,11 @@ class TransitService {
         })
         list.data = this.getDistancesToNextPrev(list)
         list.data = this.getHeadway(list, this.historyList)
-        this.vehicleList = list
+        this.vehicleList[0] = list
         list.data.forEach((item) => {
             this.historyList = this.historyList.add(item)
         })
-        this.printTable({ vehicleData: "Loaded: " + this.vehicleList.data.length + ", History:" + this.historyList.size })
+        this.printTable({ vehicleData: "Loaded: " + this.vehicleList[0].data.length + ", History:" + this.historyList.size })
 
         await this.onVehicleListUpdate(this.vehicleList)
 

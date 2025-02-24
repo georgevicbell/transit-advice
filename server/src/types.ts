@@ -10,6 +10,8 @@ export type AgencyItem = {
 };
 
 export type VehicleList = {
+    route: RouteItem;
+    agency: AgencyItem;
     lastTime: number;
     data: DataVehicleItem[];
 };
@@ -153,6 +155,8 @@ export type TrafficStopItem = {
     info: string,
 }
 export type Advice = {
+    route: RouteItem;
+    agency: AgencyItem;
     message: string;
     type: string;
     date: number;

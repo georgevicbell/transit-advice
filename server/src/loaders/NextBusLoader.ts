@@ -185,9 +185,11 @@ export async function NextBusTransformRouteConfig(
 }
 
 export async function NextBusTransformVehicles(
-  dataA: Record<string, any>
+  dataA: Record<string, any>, agency: AgencyItem | undefined, route: RouteItem
 ): Promise<VehicleList> {
   const z = {
+    agency: agency ?? { id: "", title: "", type: DataSource.NextBus, state: "", country: "", areas: undefined, typeOf: "AgencyItem" },
+    route: route,
     title: "Vehicles",
     lastTime: parseFloat(dataA?.lastTime?.time ?? 0),
     data:
